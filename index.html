@@ -644,7 +644,7 @@ function WalletModal({onConnect,onClose, lang}) {
   useEffect(()=>{
     const d=()=>setWallets(getWallets());d();
     window.addEventListener('wallet-standard:register-wallet',d);
-    const t=setTimeout(d,600);
+    const t=setTimeout(d,2000);
     return()=>{window.removeEventListener('wallet-standard:register-wallet',d);clearTimeout(t);};
   },[]);
   const tryManual=()=>{const a=addr.trim();if(!a.startsWith('0x')||a.length!==66){setErr(tr(lang,'modal_invalid'));return;}onConnect({address:a,ref:null,type:'manual'});};
