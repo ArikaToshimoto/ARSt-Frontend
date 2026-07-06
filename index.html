@@ -276,15 +276,23 @@ function shortAddr(a){return a.slice(0,6)+'...'+a.slice(-4)}
             silent: false,
             permissions: ['viewAccount', 'suggestTransactions']
           });
-          const addr = r?.accounts?.[0]?.address;
+          // Slush guarda address como getter en el prototype
+          const acc = r?.accounts?.[0];
+          const addr = acc?.address || r?.accounts?.[0]?.address;
           if (addr) { onSuccess({ address: addr, ref, type: 'standard', name }); return; }
+
+          // Fallback: buscar en wallet.accounts
+          const walletAcc = ref.accounts?.[0];
+          const walletAddr = walletAcc?.address;
+          if (walletAddr) { onSuccess({ address: walletAddr, ref, type: 'standard', name }); return; }
         }
         if (ref.connect) {
           const r = await ref.connect({
             silent: false,
             permissions: ['viewAccount', 'suggestTransactions']
           });
-          const addr = r?.accounts?.[0]?.address || ref.accounts?.[0]?.address;
+          const acc = r?.accounts?.[0] || ref.accounts?.[0];
+          const addr = acc?.address;
           if (addr) { onSuccess({ address: addr, ref, type: 'standard', name }); return; }
         }
       }
