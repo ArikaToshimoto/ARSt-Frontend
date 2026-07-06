@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARSt — Peso Argentino Digital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#080d1a;--surface:#0d1525;--surface2:#111e30;--border:#1c2e45;--border2:#263d59;--text:#e0eaf5;--muted:#4a6480;--muted2:#7a9ab5;--blue:#00b4d8;--blue-dim:rgba(0,180,216,.10);--gold:#c9a84c;--gold-dim:rgba(201,168,76,.10);--green:#10b981;--green-dim:rgba(16,185,129,.10);--red:#ef4444;--red-dim:rgba(239,68,68,.10)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;line-height:1.6;min-height:100vh}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* ── Navbar ── */
+nav{position:sticky;top:0;z-index:100;background:rgba(8,13,26,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:'IBM Plex Mono',monospace;font-size:17px;font-weight:600;display:flex;align-items:center;gap:10px;color:var(--text);text-decoration:none}
+.logo-mark{width:32px;height:32px;background:linear-gradient(135deg,var(--gold),#e6c56a);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:#080d1a}
+.logo-sub{color:var(--blue)}
+.nav-right{display:flex;align-items:center;gap:14px}
+.nav-links{display:flex;gap:24px}
+.nav-links a{font-size:13px;color:var(--muted2);text-decoration:none;transition:color .15s}
+.nav-links a:hover{color:var(--text)}
+.network-pill{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1.2px;text-transform:uppercase;padding:4px 10px;border-radius:20px;background:var(--blue-dim);color:var(--blue);border:1px solid rgba(0,180,216,.2)}
+
+/* ── Buttons ── */
+.btn{padding:8px 18px;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;cursor:pointer;border:none;transition:all .18s ease}
+.btn-primary{background:var(--blue);color:#080d1a}.btn-primary:hover{background:#00c8f0;transform:translateY(-1px)}
+.btn-outline{background:transparent;color:var(--text);border:1px solid var(--border2)}.btn-outline:hover{border-color:var(--blue);color:var(--blue)}
+.btn-gold{background:var(--gold);color:#080d1a}.btn-gold:hover{background:#dbb85a;transform:translateY(-1px)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important}
+
+/* ── Hero ── */
+.hero{padding:72px 32px 56px;max-width:1100px;margin:0 auto}
+.hero-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.hero-eyebrow::before{content:'';width:24px;height:1px;background:var(--muted)}
+.hero-title{font-family:'IBM Plex Mono',monospace;font-size:clamp(32px,5vw,56px);font-weight:600;line-height:1.08;letter-spacing:-2px;margin-bottom:16px}
+.accent-gold{color:var(--gold)}.accent-blue{color:var(--blue)}
+.hero-sub{color:var(--muted2);font-size:16px;max-width:520px;margin-bottom:40px;line-height:1.7}
+
+/* ── Ticker ── */
+.ticker{display:inline-flex;align-items:baseline;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 24px;margin-bottom:48px}
+.ticker-label{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+.ticker-value{font-family:'IBM Plex Mono',monospace;font-size:32px;font-weight:600;color:var(--text);animation:pulse-price 3s ease-in-out infinite}
+.ticker-unit{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--muted2)}
+.ticker-ts{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);margin-left:4px}
+@keyframes pulse-price{0%,100%{opacity:1}50%{opacity:.75}}
+.ticker-change{font-family:'IBM Plex Mono',monospace;font-size:11px;padding:3px 8px;border-radius:4px}
+.ticker-change.up{background:var(--green-dim);color:var(--green)}.ticker-change.dn{background:var(--red-dim);color:var(--red)}
+
+/* ── Metrics ── */
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:56px}
+.metric{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px 24px;position:relative;overflow:hidden}
+.metric::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.metric.m-blue::before{background:var(--blue)}.metric.m-gold::before{background:var(--gold)}.metric.m-green::before{background:var(--green)}.metric.m-muted::before{background:var(--muted)}.metric.m-red::before{background:var(--red)}
+.metric-label{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.metric-value{font-family:'IBM Plex Mono',monospace;font-size:24px;font-weight:600;line-height:1;color:var(--text)}
+.metric-sub{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted2);margin-top:8px}
+.metric-status-ok{color:var(--green);font-size:11px;margin-top:8px;font-family:'IBM Plex Mono',monospace}
+.metric-status-pause{color:var(--red);font-size:11px;margin-top:8px;font-family:'IBM Plex Mono',monospace}
+.cbar{height:3px;background:var(--border);border-radius:2px;margin-top:12px;overflow:hidden}
+.cbar-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--green),var(--blue));transition:width .6s ease}
+
+/* ── About section ── */
+.about{max-width:1100px;margin:0 auto;padding:0 32px 72px}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:32px}
+.about-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:28px 32px}
+.about-card h3{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.about-card h3 .icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.about-card p{color:var(--muted2);font-size:13px;line-height:1.75;margin-bottom:10px}
+.about-card p:last-child{margin-bottom:0}
+.about-steps{counter-reset:step;list-style:none;padding:0}
+.about-steps li{counter-increment:step;display:flex;gap:14px;margin-bottom:16px;font-size:13px;color:var(--muted2);line-height:1.6}
+.about-steps li::before{content:counter(step);width:24px;height:24px;border-radius:50%;background:var(--blue-dim);border:1px solid rgba(0,180,216,.3);color:var(--blue);font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.about-steps li strong{color:var(--text)}
+.security-badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.badge-security{padding:5px 12px;border-radius:6px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.5px;background:var(--green-dim);border:1px solid rgba(16,185,129,.2);color:var(--green)}
+
+/* ── Section ── */
+.section{max-width:1100px;margin:0 auto;padding:0 32px 72px}
+.section-title{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:24px;display:flex;align-items:center;gap:12px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ── Tabs ── */
+.tabs{display:flex;gap:2px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:4px;margin-bottom:24px;width:fit-content}
+.tab{padding:9px 22px;border-radius:7px;font-family:'IBM Plex Mono',monospace;font-size:11px;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all .15s ease}
+.tab.active{background:var(--surface2);color:var(--text);border:1px solid var(--border2)}
+.tab:hover:not(.active){color:var(--muted2)}
+
+/* ── Panel ── */
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:32px}
+
+/* ── Wallet prompt ── */
+.wallet-prompt{text-align:center;padding:56px 24px}
+.wallet-icon{width:64px;height:64px;background:var(--surface2);border:1px solid var(--border);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 20px}
+.wallet-prompt h3{font-family:'IBM Plex Mono',monospace;font-size:17px;font-weight:500;margin-bottom:10px}
+.wallet-prompt p{color:var(--muted2);margin-bottom:28px;font-size:13px;max-width:320px;margin-left:auto;margin-right:auto}
+
+/* ── Form elements ── */
+.field-label{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.field-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--text);outline:none;transition:border-color .15s}
+.field-input:focus{border-color:var(--blue)}.field-input::placeholder{color:var(--muted)}
+.field-hint{font-size:11px;color:var(--muted);margin-top:5px}
+.gap3{display:flex;flex-direction:column;gap:14px}
+
+/* ── Previews ── */
+.amount-preview{background:var(--blue-dim);border:1px solid rgba(0,180,216,.2);border-radius:8px;padding:14px 16px;font-family:'IBM Plex Mono',monospace;font-size:13px;display:flex;justify-content:space-between;align-items:center}
+.amount-preview .lbl{color:var(--muted2)}.amount-preview .val{color:var(--blue);font-weight:500}
+.balance-display{background:var(--gold-dim);border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:16px 18px;display:flex;justify-content:space-between;align-items:center}
+.balance-display .bl{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted2)}
+.balance-display .bv{font-family:'IBM Plex Mono',monospace;font-size:20px;font-weight:600;color:var(--gold)}
+.balance-usd{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted2);margin-top:4px}
+
+/* ── Alerts ── */
+.alert{padding:12px 16px;border-radius:8px;font-size:12px;margin-bottom:14px;line-height:1.6}
+.alert-info{background:var(--blue-dim);border:1px solid rgba(0,180,216,.2);color:var(--muted2)}
+.alert-warn{background:var(--gold-dim);border:1px solid rgba(201,168,76,.2);color:var(--gold)}
+.alert-success{background:var(--green-dim);border:1px solid rgba(16,185,129,.2);color:var(--green)}
+.alert-error{background:var(--red-dim);border:1px solid rgba(239,68,68,.2);color:var(--red)}
+
+/* ── Deposit steps ── */
+.deposit-steps{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px}
+.step{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:18px 20px}
+.step-num{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--blue);margin-bottom:8px}
+.step h4{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:500;margin-bottom:4px}
+.step p{font-size:12px;color:var(--muted2)}
+.divider{height:1px;background:var(--border);margin:22px 0}
+
+/* ── History table ── */
+.history-table{width:100%;border-collapse:collapse}
+.history-table th{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);text-align:left;padding:11px 16px;border-bottom:1px solid var(--border);background:var(--surface2)}
+.history-table td{padding:13px 16px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text);border-bottom:1px solid var(--border)}
+.history-table tr:last-child td{border-bottom:none}.history-table tr:hover td{background:rgba(255,255,255,.015)}
+.badge{padding:3px 8px;border-radius:4px;font-size:10px}
+.badge-mint{background:var(--green-dim);color:var(--green)}.badge-burn{background:var(--red-dim);color:var(--red)}
+.tx-link{color:var(--blue);text-decoration:none;font-size:11px}.tx-link:hover{text-decoration:underline}
+
+/* ── User balance card ── */
+.user-balance-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:24px}
+.user-stat{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.user-stat-label{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.user-stat-value{font-family:'IBM Plex Mono',monospace;font-size:20px;font-weight:600;color:var(--text)}
+.user-stat-sub{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted2);margin-top:5px}
+
+/* ── Wallet modal ── */
+.wallet-modal{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);z-index:200;display:flex;align-items:center;justify-content:center}
+.wallet-modal-inner{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:36px;width:400px;max-width:90vw}
+.wallet-modal-inner h3{font-family:'IBM Plex Mono',monospace;font-size:17px;margin-bottom:8px}
+.wallet-modal-inner p{color:var(--muted2);font-size:13px;margin-bottom:24px}
+.wallet-option{display:flex;align-items:center;gap:14px;padding:15px 18px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;cursor:pointer;margin-bottom:10px;transition:border-color .15s}
+.wallet-option:hover{border-color:var(--blue)}.wallet-option.disabled{opacity:.4;cursor:default}
+.wallet-option-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:19px;background:var(--surface);flex-shrink:0;overflow:hidden}
+.wallet-option-icon img{width:26px;height:26px;object-fit:contain;border-radius:4px}
+.wallet-option-name{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:500}
+.wallet-option-sub{font-size:11px;color:var(--muted2)}
+.connected-badge{font-family:'IBM Plex Mono',monospace;font-size:11px;padding:7px 14px;border-radius:8px;background:var(--surface2);border:1px solid var(--border2);color:var(--text);cursor:pointer;display:flex;align-items:center;gap:7px;transition:all .15s}
+.connected-badge:hover{border-color:var(--red);color:var(--red)}
+
+/* ── Misc ── */
+.dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:5px}
+.dot-green{background:var(--green);box-shadow:0 0 6px var(--green)}.dot-blue{background:var(--blue)}
+.dot-pulse{animation:dotpulse 2s infinite}@keyframes dotpulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── Footer ── */
+footer{border-top:1px solid var(--border);padding:28px 32px;display:flex;justify-content:space-between;align-items:center}
+.footer-left{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted)}
+.footer-links{display:flex;gap:24px}
+.footer-links a{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);text-decoration:none}.footer-links a:hover{color:var(--text)}
+
+/* ── Responsive ── */
+@media(max-width:900px){.metrics{grid-template-columns:1fr 1fr}.about-grid{grid-template-columns:1fr}.user-balance-grid{grid-template-columns:1fr 1fr}.deposit-steps{grid-template-columns:1fr}}
+@media(max-width:600px){.metrics{grid-template-columns:1fr}.user-balance-grid{grid-template-columns:1fr}nav{padding:0 16px}.hero,.about,.section{padding-left:16px;padding-right:16px}.hero-title{font-size:28px;letter-spacing:-1px}.nav-links{display:none}footer{flex-direction:column;gap:14px;text-align:center}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="module">
+import { createElement as h, useState, useEffect, useRef } from 'https://esm.sh/react@18';
+import { createRoot } from 'https://esm.sh/react-dom@18/client';
+
+// ── Constantes ────────────────────────────────────────────────────────────────
+const SUI_RPC    = 'https://fullnode.testnet.sui.io:443';
+const PACKAGE_ID = '0x193773c18f0e409e744f27bbf9290cb837da5eed94c598e2c6ced1017fdf375c';
+const RESERVE_ID = '0x3edc8036b004862e9678724d40069a4b6c442fe19ff2983cd6ce4592794ee152';
+const PRICEFEED  = '0xddec62244186d0572464b12c87a905005897cb8472de866c174f2334aae47a87';
+const ARST_TYPE  = '0xe575e261548ffaeb811eb8115aca5e2fa4e0e780911f495701e9cb0600dcfd62::arst::ARST';
+const EXPLORER   = 'https://testnet.suivision.xyz';
+const BACKEND    = 'https://arst-backend-production.up.railway.app';
+
+async function rpc(method, params) {
+  const r = await fetch(SUI_RPC,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method,params})});
+  return (await r.json()).result;
+}
+
+function fmt(n,d=0){return Number(n).toLocaleString('es-AR',{minimumFractionDigits:d,maximumFractionDigits:d})}
+function fmtUSD(n){return Number(n).toLocaleString('es-AR',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function shortAddr(a){return a.slice(0,6)+'...'+a.slice(-4)}
+
+  // ── Wallet detection via Wallet Standard ──────────────────────────────────────
+  let _registeredWallets = [];
+
+  function initWalletStandard() {
+    // Escuchar wallets que se registran via Wallet Standard
+    const handler = (event) => {
+      const wallet = event.detail;
+      if (!wallet?.name) return;
+      // Solo wallets SUI (que soporten sui: chains)
+      const chains = wallet.chains || wallet['#t']?.chains || [];
+      const isSui = JSON.stringify(chains).includes('sui:') ||
+        wallet.name === 'Slush' ||
+        wallet.name === 'Suiet' ||
+        wallet.name === 'Nightly';
+      if (!isSui) return;
+      if (!_registeredWallets.find(w => w.name === wallet.name)) {
+        _registeredWallets.push({
+          name: wallet.name,
+          icon: wallet.icon || wallet['#s'] || null,
+          ref: wallet,
+          type: 'standard'
+        });
+      }
+    };
+    window.addEventListener('wallet-standard:register-wallet', handler);
+
+    // Disparar evento para que las wallets ya instaladas se registren
+    window.dispatchEvent(new CustomEvent('wallet-standard:app-ready', {
+      detail: {
+        register: (wallet) => {
+          if (!wallet?.name) return;
+          const isSui = wallet.name === 'Slush' || wallet.name === 'Suiet' || wallet.name === 'Nightly' || wallet.name === 'Noir Wallet' || wallet.name === 'Phantom';
+          if (!isSui) return;
+          if (!_registeredWallets.find(w => w.name === wallet.name)) {
+            _registeredWallets.push({ name: wallet.name, icon: wallet.icon || null, ref: wallet, type: 'standard' });
+          }
+        }
+      }
+    }));
+  }
+
+  // Llamar al init
+  initWalletStandard();
+
+  function getWallets() {
+    // También agregar Nightly y Noir si están en window directamente
+    if (window.nightly?.sui && !_registeredWallets.find(w => w.name === 'Nightly')) {
+      _registeredWallets.push({ name: 'Nightly', icon: '🌙', ref: window.nightly.sui, type: 'nightly' });
+    }
+    
+    return _registeredWallets;
+  }
+
+  async function connectWallet(wallet, onSuccess, setErr) {
+    try {
+      const { ref, type, name } = wallet;
+
+      if (type === 'nightly') {
+        await ref.connect?.({ network: 'sui:testnet' });
+        const accs = await ref.getAccounts?.() || ref.accounts || [];
+        const addr = accs[0]?.address || accs[0];
+        if (addr) { onSuccess({ address: addr, ref, type }); return; }
+      }
+
+      if (type === 'noir') {
+        await ref.connect?.({ network: 'sui:testnet' });
+        const accs = await ref.getAccounts?.() || [];
+        const addr = accs[0]?.address || accs[0];
+        if (addr) { onSuccess({ address: addr, ref, type }); return; }
+      }
+
+      // Slush, Suiet, Phantom y otras wallets Wallet Standard
+      if (type === 'standard') {
+        // Método 1: features standard:connect
+        const connectFeat = ref.features?.['standard:connect'] || ref['#e']?.['standard:connect'];
+        if (connectFeat) {
+          const r = await connectFeat.connect?.();
+          const addr = r?.accounts?.[0]?.address;
+          if (addr) { onSuccess({ address: addr, ref, type: 'standard', name }); return; }
+        }
+        // Método 2: connect directo
+        if (ref.connect) {
+          const r = await ref.connect({ silent: false });
+          const addr = r?.accounts?.[0]?.address || ref.accounts?.[0]?.address;
+          if (addr) { onSuccess({ address: addr, ref, type: 'standard', name }); return; }
+        }
+      }
+
+      setErr('No se pudo obtener la dirección. Ingresala manualmente.');
+    } catch (e) {
+      setErr('Error: ' + (e.message || 'desconocido') + '. Ingresá tu dirección manualmente.');
+    }
+  }
+
+// ── WalletModal ───────────────────────────────────────────────────────────────
+function WalletModal({onConnect,onClose}) {
+  const [addr,setAddr]=useState('');const [err,setErr]=useState('');const [wallets,setWallets]=useState([]);
+  useEffect(()=>{
+    const d=()=>setWallets(getWallets());d();
+    window.addEventListener('wallet-standard:register-wallet',d);
+    const t=setTimeout(d,600);
+    return()=>{window.removeEventListener('wallet-standard:register-wallet',d);clearTimeout(t);};
+  },[]);
+  const tryManual=()=>{const a=addr.trim();if(!a.startsWith('0x')||a.length!==66){setErr('Dirección inválida (0x + 64 caracteres)');return;}onConnect({address:a,ref:null,type:'manual'});};
+  const known=[{name:'Nightly',sub:'nightly.app',icon:'🌙'},{name:'Noir Wallet',sub:'Chrome Extension',icon:'⬛'},{name:'Phantom',sub:'phantom.app',icon:'👻'}];
+  return h('div',{className:'wallet-modal',onClick:onClose},
+    h('div',{className:'wallet-modal-inner',onClick:e=>e.stopPropagation()},
+      h('h3',null,'Conectar wallet'),
+      h('p',null,'Conectá tu wallet SUI para ver tu saldo, depositar y retirar.'),
+      wallets.length>0
+        ? wallets.map((w,i)=>h('div',{key:i,className:'wallet-option',onClick:()=>connectWallet(w,onConnect,setErr)},
+            h('div',{className:'wallet-option-icon'},
+            w.icon && w.icon.startsWith('data:')
+            ? h('img',{src:w.icon,alt:w.name})
+            : h('span',null,w.icon||(w.name[0]))
+          ),
+            h('div',null,h('div',{className:'wallet-option-name'},w.name),h('div',{className:'wallet-option-sub'},'Detectada · click para conectar'))
+          ))
+        : known.map((w,i)=>h('div',{key:i,className:'wallet-option disabled'},
+            h('div',{className:'wallet-option-icon'},w.icon),
+            h('div',null,h('div',{className:'wallet-option-name'},w.name),h('div',{className:'wallet-option-sub'},'No detectada · '+w.sub))
+          )),
+      h('div',{className:'divider'}),
+      h('div',{className:'field-label'},'O ingresá tu dirección SUI'),
+      h('input',{className:'field-input',placeholder:'0x...',value:addr,onChange:e=>{setAddr(e.target.value);setErr('');}}),
+      err&&h('div',{style:{color:'var(--red)',fontSize:'11px',marginTop:'6px'}},err),
+      h('button',{className:'btn btn-primary',style:{width:'100%',padding:'12px',marginTop:'14px'},onClick:tryManual},'Conectar con dirección')
+    )
+  );
+}
+
+// ── About Section ─────────────────────────────────────────────────────────────
+function AboutSection() {
+  return h('div',{className:'about'},
+    h('div',{className:'section-title'},'Qué es ARSt'),
+    h('div',{className:'about-grid'},
+      // Card 1: Qué es
+      h('div',{className:'about-card'},
+        h('h3',null,h('div',{className:'icon',style:{background:'var(--gold-dim)'}},h('span',null,'₳')),'ARSt, el peso en la blockchain'),
+        h('p',null,'ARSt es una moneda digital que vale exactamente lo mismo que un peso argentino. Por cada ARSt que existe, hay un peso argentino guardado en una cuenta bancaria real en Argentina.'),
+        h('p',null,'Podés usarlo para guardar pesos sin depender de un banco, enviarlo a cualquier persona en el mundo en segundos, y recuperar tus pesos cuando quieras.')
+      ),
+      // Card 2: Cómo funciona
+      h('div',{className:'about-card'},
+        h('h3',null,h('div',{className:'icon',style:{background:'var(--blue-dim)'}},h('span',null,'⟳')),'Cómo funciona'),
+        h('ol',{className:'about-steps'},
+          h('li',null,h('span',null,h('strong',null,'Depositás pesos'),' — Pagás con Mercado Pago y recibís ARSt automáticamente en tu wallet.')),
+          h('li',null,h('span',null,h('strong',null,'Los ARSt quedan en tu wallet'),' — Son tuyos, nadie los puede mover sin tu firma.')),
+          h('li',null,h('span',null,h('strong',null,'Retirás cuando quieras'),' — Solicitás el retiro con tu CBU y recibís los pesos en tu cuenta bancaria.'))
+        )
+      ),
+      // Card 3: Respaldo
+      h('div',{className:'about-card'},
+        h('h3',null,h('div',{className:'icon',style:{background:'var(--green-dim)'}},h('span',null,'🏦')),'Cómo está respaldado'),
+        h('p',null,'Por cada ARSt en circulación, hay exactamente un peso argentino depositado en una cuenta bancaria regulada en Argentina. Esta reserva es pública y verificable en tiempo real en la blockchain.'),
+        h('p',null,'No hay "magia financiera" ni apalancamiento: el respaldo es 1 a 1, siempre.')
+      ),
+      // Card 4: Seguridad
+      h('div',{className:'about-card'},
+        h('h3',null,h('div',{className:'icon',style:{background:'var(--blue-dim)'}},h('span',null,'🔒')),'Seguridad técnica'),
+        h('p',null,'El contrato inteligente que controla ARSt tiene múltiples capas de seguridad para proteger tu dinero:'),
+        h('div',{className:'security-badges'},
+          h('span',{className:'badge-security'},'Multifirma 2 de 3'),
+          h('span',{className:'badge-security'},'Timelock 48hs'),
+          h('span',{className:'badge-security'},'Reserva on-chain'),
+          h('span',{className:'badge-security'},'Código abierto'),
+          h('span',{className:'badge-security'},'Sin admin unilateral'),
+          h('span',{className:'badge-security'},'Pausa de emergencia')
+        )
+      )
+    )
+  );
+}
+
+  // ── SendTab ───────────────────────────────────────────────────────────────────
+  function SendTab({ address, balance, wallet }) {
+    const [to, setTo] = useState('');
+    const [amount, setAmount] = useState('');
+    const [status, setStatus] = useState('idle');
+    const [txDigest, setTxDigest] = useState('');
+    const [errMsg, setErrMsg] = useState('');
+
+    if (!address) return h('div', { className: 'panel' }, h('div', { className: 'wallet-prompt' },
+      h('div', { className: 'wallet-icon' }, '📤'),
+      h('h3', null, 'Conectá tu wallet'),
+      h('p', null, 'Necesitás conectar una wallet SUI para enviar ARSt.')
+    ));
+
+    const preview = parseFloat(amount) || 0;
+
+    const submit = async () => {
+      if (!to || !to.startsWith('0x') || to.length !== 66) { alert('Dirección destino inválida'); return; }
+      if (to === address) { alert('No podés enviarte ARSt a vos mismo'); return; }
+      if (!preview || preview <= 0) { alert('Ingresá un monto válido'); return; }
+      if (preview > balance) { alert('Saldo insuficiente'); return; }
+      if (!wallet?.ref && wallet?.type !== 'manual') { alert('Wallet no disponible. Reconectá.'); return; }
+
+      setStatus('building'); setErrMsg('');
+
+      try {
+        const amountUnits = Math.round(preview * 100);
+
+        // Obtener coins ARSt del usuario
+        const coinsRes = await rpc('suix_getCoins', [address, ARST_TYPE, null, 10]);
+        const coins = coinsRes?.data || [];
+        if (!coins.length) throw new Error('No tenés ARSt en tu wallet');
+
+        const sorted = coins.sort((a, b) => Number(BigInt(b.balance) - BigInt(a.balance)));
+        const coin = sorted.find(c => parseInt(c.balance) >= amountUnits);
+        if (!coin) throw new Error('Saldo insuficiente en un solo coin');
+
+        setStatus('signing');
+
+        const ref = wallet.ref;
+        const type = wallet.type;
+
+        // Nightly tiene su propio método de transferencia
+        if (type === 'nightly') {
+          const { Transaction } = await import('https://esm.sh/@mysten/sui@1.21.1/transactions');
+          const tx = new Transaction();
+          tx.setSender(address);
+          tx.setGasBudget(10_000_000);
+
+          if (parseInt(coin.balance) > amountUnits) {
+            const [split] = tx.splitCoins(tx.object(coin.coinObjectId), [tx.pure.u64(amountUnits)]);
+            tx.transferObjects([split], tx.pure.address(to));
+          } else {
+            tx.transferObjects([tx.object(coin.coinObjectId)], tx.pure.address(to));
+          }
+
+          result = await ref.signAndExecuteTransaction({
+            transaction: tx,
+            chain: 'sui:testnet',
+            options: { showEffects: true }
+          });
+         } else if (type === 'standard') {
+        const { Transaction } = await import('https://esm.sh/@mysten/sui@1.21.1/transactions');
+        const tx = new Transaction();
+        tx.setSender(address);
+        tx.setGasBudget(10_000_000);
+
+        if (parseInt(coin.balance) > amountUnits) {
+          const [split] = tx.splitCoins(tx.object(coin.coinObjectId), [tx.pure.u64(amountUnits)]);
+          tx.transferObjects([split], tx.pure.address(to));
+        } else {
+          tx.transferObjects([tx.object(coin.coinObjectId)], tx.pure.address(to));
+        }
+
+        const feat = ref.features?.['sui:signAndExecuteTransaction'] ||
+          ref['#e']?.['sui:signAndExecuteTransaction'];
+        if (feat) {
+          result = await feat.signAndExecuteTransaction?.({
+            transaction: tx,
+            chain: 'sui:testnet',
+            options: { showEffects: true }
+          });
+        }
+      }
+
+        if (!result) throw new Error('La wallet no soportó la operación');
+
+        const digest = result?.digest || result?.effects?.transactionDigest;
+        setTxDigest(digest || 'ok');
+        setStatus('done');
+
+      } catch (e) {
+        console.error('Error envío:', e);
+        setErrMsg(e.message || 'Error desconocido');
+        setStatus('error');
+      }
+    };
+
+       
+
+    if (status === 'done') return h('div', { className: 'panel' }, h('div', { className: 'wallet-prompt' },
+      h('div', { className: 'wallet-icon' }, '✅'),
+      h('h3', null, 'Envío exitoso'),
+      h('p', null, `Enviaste ${fmt(preview, 2)} ARSt a ${shortAddr(to)}`),
+      txDigest && h('a', { className: 'tx-link', href: `${EXPLORER}/txblock/${txDigest}`, target: '_blank', style: { display: 'block', marginTop: '12px' } }, 'Ver transacción →'),
+      h('button', { className: 'btn btn-outline', style: { marginTop: '20px' }, onClick: () => { setStatus('idle'); setTo(''); setAmount(''); } }, 'Nuevo envío')
+    ));
+
+    const btnLabel = {
+      idle: 'Enviar ARSt',
+      building: 'Preparando...',
+      signing: 'Esperando firma...',
+      error: 'Reintentar'
+    }[status] || 'Enviar ARSt';
+
+    return h('div', { className: 'panel' },
+      h('div', { className: 'gap3' },
+        h('div', { className: 'balance-display' },
+          h('div', null,
+            h('div', { className: 'bl' }, 'Saldo disponible'),
+            h('div', { className: 'bv' }, fmt(balance, 2) + ' ARSt')
+          )
+        ),
+        h('div', null,
+          h('div', { className: 'field-label' }, 'Dirección SUI destino'),
+          h('input', {
+            className: 'field-input',
+            type: 'text',
+            placeholder: '0x...',
+            value: to,
+            onChange: e => setTo(e.target.value.trim())
+          }),
+          h('div', { className: 'field-hint' }, 'La dirección SUI de quien va a recibir los ARSt')
+        ),
+        h('div', null,
+          h('div', { className: 'field-label' }, '¿Cuántos ARSt querés enviar?'),
+          h('input', {
+            className: 'field-input',
+            type: 'number',
+            placeholder: '100',
+            min: 0.01,
+            step: 1,
+            value: amount,
+            onChange: e => setAmount(e.target.value)
+          })
+        ),
+        h('div', { className: 'amount-preview' },
+          h('span', { className: 'lbl' }, 'Vas a enviar'),
+          h('span', { className: 'val' }, preview > 0 ? fmt(preview, 2) + ' ARSt' : '— ARSt')
+        ),
+        errMsg && h('div', { className: 'alert alert-error' }, '❌ ' + errMsg),
+        h('div', { className: 'alert alert-info' }, 'ℹ️ El envío es instantáneo y sin costo adicional más allá del gas de SUI (fracciones de centavo).'),
+        h('button', {
+          className: 'btn btn-primary',
+          style: { width: '100%', padding: '14px' },
+          onClick: submit,
+          disabled: status === 'building' || status === 'signing'
+        }, btnLabel)
+      )
+    );
+  }
+
+// ── DepositTab ────────────────────────────────────────────────────────────────
+function DepositTab({address}) {
+  const [amount,setAmount]=useState('');const [loading,setLoading]=useState(false);const [success,setSuccess]=useState('');
+  const preview=parseFloat(amount)||0;
+  const openMP=async()=>{
+    if(preview<100){alert('Monto mínimo: $100 ARS');return;}
+    setLoading(true);setSuccess('');
+    try{
+      const res=await fetch(`${BACKEND}/api/create-preference`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amountArs:preview,suiAddress:address})});
+      if(res.ok){const d=await res.json();window.open(d.sandbox_init_point||d.init_point,'_blank');}
+      else throw new Error();
+    }catch(e){setSuccess(`Para testnet, enviá un pago de prueba con descripción:\nARSt:${address}`);}
+    finally{setLoading(false);}
+  };
+  if(!address) return h('div',{className:'panel'},h('div',{className:'wallet-prompt'},h('div',{className:'wallet-icon'},'🔗'),h('h3',null,'Conectá tu wallet'),h('p',null,'Necesitás conectar una wallet SUI para recibir ARSt en tu cuenta.')));
+  return h('div',{className:'panel'},
+    h('div',{className:'deposit-steps'},
+      h('div',{className:'step'},h('div',{className:'step-num'},'PASO 01'),h('h4',null,'Ingresá el monto'),h('p',null,'Indicá cuántos pesos querés convertir a ARSt. Mínimo $100 ARS.')),
+      h('div',{className:'step'},h('div',{className:'step-num'},'PASO 02'),h('h4',null,'Pagá con Mercado Pago'),h('p',null,'Se abre el checkout de MP. Al confirmarse el pago, tus ARSt llegan automáticamente.'))
+    ),
+    h('div',{className:'divider'}),
+    h('div',{className:'gap3'},
+      h('div',null,
+        h('div',{className:'field-label'},'¿Cuántos pesos querés depositar?'),
+        h('input',{className:'field-input',type:'number',placeholder:'1000',min:100,step:100,value:amount,onChange:e=>setAmount(e.target.value)}),
+        h('div',{className:'field-hint'},'1 ARS = 1 ARSt · Mínimo $100 ARS')
+      ),
+      h('div',{className:'amount-preview'},h('span',{className:'lbl'},'Vas a recibir'),h('span',{className:'val'},preview>=100?fmt(preview)+' ARSt':'— ARSt')),
+      h('div',{className:'alert alert-info'},'📍 Tu wallet: ',h('span',{style:{color:'var(--blue)',fontFamily:"'IBM Plex Mono',monospace",fontSize:'11px'}},address.slice(0,12)+'...'+address.slice(-8))),
+      success&&h('div',{className:'alert alert-success'},h('pre',{style:{fontSize:'11px',whiteSpace:'pre-wrap'}},success)),
+      h('button',{className:'btn btn-gold',style:{width:'100%',padding:'14px'},onClick:openMP,disabled:loading},loading?'Procesando...':'Pagar con Mercado Pago →')
+    )
+  );
+}
+
+// ── WithdrawTab ───────────────────────────────────────────────────────────────
+function WithdrawTab({address,balance,wallet,oraclePrice}) {
+  const [amount,setAmount]=useState('');const [cbu,setCbu]=useState('');
+  const [status,setStatus]=useState('idle');const [txDigest,setTxDigest]=useState('');const [errMsg,setErrMsg]=useState('');
+  if(!address) return h('div',{className:'panel'},h('div',{className:'wallet-prompt'},h('div',{className:'wallet-icon'},'🏦'),h('h3',null,'Conectá tu wallet'),h('p',null,'Conectá tu wallet SUI para solicitar el retiro de tus pesos.')));
+  const preview=parseFloat(amount)||0;
+  const previewUSD=oraclePrice>0?(preview/oraclePrice).toFixed(2):'—';
+  const submit=async()=>{
+    if(!preview||preview<=0){alert('Ingresá un monto válido');return;}
+    if(preview>balance){alert('Saldo insuficiente');return;}
+    if(!cbu||cbu.length!==22||!/^\d{22}$/.test(cbu)){alert('CBU inválido. Debe tener exactamente 22 dígitos numéricos.');return;}
+    if(!wallet?.ref&&wallet?.type!=='manual'){alert('Wallet no disponible. Reconectá tu wallet.');return;}
+    setStatus('signing');setErrMsg('');
+    try{
+      const amountUnits=Math.round(preview*100);
+      const res=await fetch(`${BACKEND}/api/create-withdrawal`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({address,amountUnits,cbu,amountArst:preview})});
+      if(!res.ok) throw new Error('Error al preparar el retiro');
+      const {txBytes}=await res.json();
+      setStatus('sending');
+      // Firmar con wallet
+      let signedTx;const ref=wallet?.ref;const type=wallet?.type;
+      if(type==='nightly') signedTx=await ref.signAndExecuteTransaction?.({transactionBlock:txBytes,options:{showEffects:true}});
+      else if(type==='noir') signedTx=await ref.signAndExecuteTransactionBlock?.({transactionBlock:txBytes,options:{showEffects:true}});
+      else if(type==='standard'){const feat=ref?.features?.['sui:signAndExecuteTransaction'];if(feat) signedTx=await feat.signAndExecuteTransaction({transaction:txBytes,options:{showEffects:true}});}
+      else{await fetch(`${BACKEND}/api/withdrawal-request`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({address,amountArst:preview,cbu})});setStatus('done');setTxDigest('manual');return;}
+      setTxDigest(signedTx?.digest||'ok');setStatus('done');
+    }catch(e){setErrMsg(e.message||'Error desconocido');setStatus('error');}
+  };
+  if(status==='done') return h('div',{className:'panel'},h('div',{className:'wallet-prompt'},
+    h('div',{className:'wallet-icon'},'✅'),
+    h('h3',null,txDigest==='manual'?'Solicitud registrada':'Retiro enviado'),
+    h('p',null,txDigest==='manual'?`Tu retiro de ${fmt(preview)} ARS al CBU ${cbu} fue registrado. Lo procesamos en 24hs hábiles.`:`Quema de ${fmt(preview)} ARSt ejecutada. Recibirás ${fmt(preview)} ARS en tu CBU.`),
+    txDigest&&txDigest!=='manual'&&h('a',{className:'tx-link',href:`${EXPLORER}/txblock/${txDigest}`,target:'_blank',style:{display:'block',marginTop:'12px'}},'Ver transacción en explorer →'),
+    h('button', { className: 'btn btn-outline', style: { marginTop: '20px' }, onClick: () => { setStatus('idle'); setAmount(''); setCbu(''); } }, 'Nueva solicitud')
+  ));
+  const btnLabel={idle:'Solicitar retiro',signing:'Esperando firma...',sending:'Enviando...',error:'Reintentar'}[status]||'Solicitar retiro';
+  return h('div',{className:'panel'},
+    h('div',{className:'gap3'},
+      h('div',{className:'balance-display'},
+        h('div',null,h('div',{className:'bl'},'Saldo disponible'),h('div',{className:'bv'},fmt(balance,2)+' ARSt'),h('div',{className:'balance-usd'},'≈ $'+fmt(balance)+' ARS'+(oraclePrice>0?' · ≈ USD '+fmtUSD(balance/oraclePrice):''))),
+        h('button',{className:'btn btn-outline',style:{fontSize:'11px',padding:'6px 14px'},onClick:()=>setAmount(String(balance))},'Máximo')
+      ),
+      h('div',null,
+        h('div',{className:'field-label'},'¿Cuántos ARSt querés retirar?'),
+        h('input',{className:'field-input',type:'number',placeholder:'500',min:1,value:amount,onChange:e=>setAmount(e.target.value)})
+      ),
+      h('div',null,
+        h('div',{className:'field-label'},'CBU / CVU de destino'),
+        h('input',{className:'field-input',type:'text',placeholder:'0000000000000000000000',maxLength:22,value:cbu,onChange:e=>setCbu(e.target.value.replace(/\D/g,''))}),
+        h('div',{className:'field-hint'},'22 dígitos · CBU o CVU de tu banco o Mercado Pago')
+      ),
+      h('div',{className:'amount-preview'},h('span',{className:'lbl'},'Vas a recibir'),h('span',{className:'val'},preview>0?'$'+fmt(preview)+' ARS'+(oraclePrice>0?' (≈ USD '+fmtUSD(preview/oraclePrice)+')':''):'— ARS')),
+      errMsg&&h('div',{className:'alert alert-error'},'❌ '+errMsg),
+      h('div',{className:'alert alert-warn'},'⚠️ Los retiros se procesan manualmente dentro de las 24 horas hábiles. Verificá que el CBU sea correcto antes de confirmar.'),
+      h('button',{className:'btn btn-primary',style:{width:'100%',padding:'14px'},onClick:submit,disabled:status==='signing'||status==='sending'},btnLabel)
+    )
+  );
+}
+
+// ── HistoryTab ────────────────────────────────────────────────────────────────
+function HistoryTab({address,oraclePrice}) {
+  const [events,setEvents]=useState([]);const [loading,setLoading]=useState(false);
+  useEffect(()=>{
+    if(!address)return;setLoading(true);
+    rpc('suix_queryEvents',[{MoveEventType:`${PACKAGE_ID}::arst::MintEvent`},null,20,false])
+      .then(d=>setEvents((d?.data||[]).filter(e=>e.parsedJson?.recipient===address)))
+      .catch(console.error).finally(()=>setLoading(false));
+  },[address]);
+  if(!address) return h('div',{className:'panel'},h('div',{className:'wallet-prompt'},h('div',{className:'wallet-icon'},'📋'),h('h3',null,'Conectá tu wallet'),h('p',null,'Conectá tu wallet para ver tu historial de transacciones.')));
+  if(loading) return h('div',{className:'panel'},h('div',{style:{textAlign:'center',padding:'48px',color:'var(--muted)',fontFamily:"'IBM Plex Mono',monospace",fontSize:'12px'}},'Cargando historial...'));
+  return h('div',{className:'panel',style:{padding:0,overflow:'hidden'}},
+    h('table',{className:'history-table'},
+      h('thead',null,h('tr',null,h('th',null,'Fecha'),h('th',null,'Tipo'),h('th',null,'ARSt'),h('th',null,'Valor ARS'),h('th',null,'Estado'),h('th',null,'TX'))),
+      h('tbody',null,
+        events.length===0
+          ? h('tr',null,h('td',{colSpan:6,style:{textAlign:'center',color:'var(--muted)',padding:'48px'}},'Sin transacciones todavía. Hacé tu primer depósito.'))
+          : events.map((e,i)=>{
+              const amount=parseInt(e.parsedJson?.amount??0)/100;
+              const ts=new Date(parseInt(e.timestampMs)).toLocaleString('es-AR');
+              const d=e.id?.txDigest??'';
+              return h('tr',{key:i},
+                h('td',null,ts),
+                h('td',null,h('span',{className:'badge badge-mint'},'DEPÓSITO')),
+                h('td',null,fmt(amount,2)),
+                h('td',null,'$'+fmt(amount)),
+                h('td',null,h('span',{className:'dot dot-green'}),'Completado'),
+                h('td',null,h('a',{className:'tx-link',href:`${EXPLORER}/txblock/${d}`,target:'_blank'},d.slice(0,10)+'...'))
+              );
+            })
+      )
+    )
+  );
+}
+
+// ── App ───────────────────────────────────────────────────────────────────────
+function App() {
+  const [tab,setTab]=useState('deposit');
+  const [showModal,setShowModal]=useState(false);
+  const [wallet,setWallet]=useState(null);
+  const [showDisconnect, setShowDisconnect] = useState(false);
+  const address=wallet?.address||null;
+  const [balance,setBalance]=useState(0);
+  const [metrics,setMetrics]=useState({supply:0,reserve:0,collateral:0,paused:false,totalTx:0,auditAgo:'—'});
+  const [oracle,setOracle]=useState({price:0,change:0,ts:0});
+
+  // Cargar métricas
+  useEffect(()=>{
+    const load=async()=>{
+      try{
+        const r=await rpc('sui_getObject',[RESERVE_ID,{showContent:true}]);
+        const f=r?.data?.content?.fields;
+        if(f){
+          const supply=parseInt(f.arst_supply??0)/100;
+          const reserve=parseInt(f.ars_reserve_centavos??0)/100;
+          const collateral=supply>0?(reserve/supply)*100:100;
+          setMetrics(m=>({...m,supply,reserve,collateral,paused:f.paused??false}));
+        }
+      }catch(e){}
+      try{
+        const r2=await rpc('sui_getObject',[PRICEFEED,{showContent:true}]);
+        const f2=r2?.data?.content?.fields;
+        if(f2){
+          const price=parseInt(f2.price_ars_per_usd??0)/1_000_000;
+          const prev=parseInt(f2.prev_price_ars_per_usd??0)/1_000_000;
+          const ts=parseInt(f2.last_update_ms??0);
+          setOracle({price,change:prev>0?((price-prev)/prev*100):0,ts});
+        }
+      }catch(e){}
+      // Total transacciones
+      try{
+        const r3=await rpc('suix_queryEvents',[{MoveEventType:`${PACKAGE_ID}::arst::MintEvent`},null,1,false]);
+        // Aproximación: usar el cursor del último evento
+      }catch(e){}
+    };
+    load();const t=setInterval(load,30000);return()=>clearInterval(t);
+  },[]);
+
+  // Cargar balance
+  useEffect(()=>{
+    if(!address){setBalance(0);return;}
+    const load=()=>rpc('suix_getBalance',[address,ARST_TYPE]).then(r=>setBalance(parseInt(r?.totalBalance??'0')/100)).catch(console.error);
+    load();const t=setInterval(load,15000);return()=>clearInterval(t);
+  },[address]);
+
+  const connect=(w)=>{setWallet(w);setShowModal(false);};
+  const disconnect=()=>{setWallet(null);setBalance(0);};
+
+  const tsAgo=oracle.ts>0?Math.floor((Date.now()-oracle.ts)/60000):null;
+  const tsLabel=tsAgo===null?'—':tsAgo<1?'ahora':tsAgo<60?`hace ${tsAgo} min`:`hace ${Math.floor(tsAgo/60)}h`;
+
+  return h('div',null,
+    showModal&&h(WalletModal,{onConnect:connect,onClose:()=>setShowModal(false)}),
+
+    // Navbar
+    h('nav',null,
+      h('a',{className:'nav-logo',href:'#'},h('div',{className:'logo-mark'},'₳'),'ARS',h('span',{className:'logo-sub'},'t')),
+      h('div',{style:{display:'flex',alignItems:'center',gap:'32px'}},
+        h('div',{className:'nav-links'},
+          h('a',{href:'#about',onClick:e=>{e.preventDefault();document.getElementById('about-section')?.scrollIntoView({behavior:'smooth'})}},'¿Qué es ARSt?'),
+          h('a',{href:'#metrics',onClick:e=>{e.preventDefault();document.getElementById('metrics-section')?.scrollIntoView({behavior:'smooth'})}},'Transparencia'),
+          h('a',{href:'#account',onClick:e=>{e.preventDefault();document.getElementById('account-section')?.scrollIntoView({behavior:'smooth'})}},'Mi cuenta')
+        ),
+        h('div',{className:'nav-right'},
+          h('span',{className:'network-pill'},'testnet'),
+          address
+            ? h('div',{style:{position:'relative'}},
+  h('div',{className:'connected-badge',onClick:()=>setShowDisconnect(d=>!d)},
+    h('span',{className:'dot dot-green'}),
+    shortAddr(address),
+    h('span',{style:{marginLeft:'4px',fontSize:'10px',color:'var(--muted2)'}},'▾')
+  ),
+  showDisconnect && h('div',{
+    style:{position:'absolute',right:0,top:'calc(100% + 6px)',background:'var(--surface)',border:'1px solid var(--border)',borderRadius:'8px',padding:'4px',minWidth:'140px',zIndex:50}
+  },
+    h('button',{
+      style:{width:'100%',padding:'8px 12px',background:'transparent',border:'none',color:'var(--red)',fontFamily:"'IBM Plex Mono',monospace",fontSize:'11px',cursor:'pointer',textAlign:'left',borderRadius:'6px'},
+      onClick:()=>{disconnect();setShowDisconnect(false);}
+    },'Desconectar wallet')
+  )
+)
+            : h('button',{className:'btn btn-primary',onClick:()=>setShowModal(true)},'Conectar wallet')
+        )
+      )
+    ),
+
+    // Hero
+    h('div',{className:'hero'},
+      h('div',{className:'hero-eyebrow'},'Peso argentino · Blockchain SUI · Respaldo 1 a 1'),
+      h('h1',{className:'hero-title'},'Tu ',h('span',{className:'accent-gold'},'peso'),' en la ',h('br'),h('span',{className:'accent-blue'},'blockchain')),
+      h('p',{className:'hero-sub'},'ARSt es una moneda digital respaldada 1 a 1 por pesos argentinos en cuenta bancaria. Depositá, retirá y usá tus pesos sin intermediarios.'),
+
+      // Ticker
+      h('div',{className:'ticker'},
+        h('span',{className:'ticker-label'},'Precio USD oficial'),
+        h('span',{className:'ticker-value'},oracle.price>0?'$'+fmt(oracle.price):'—'),
+        h('span',{className:'ticker-unit'},'ARS'),
+        oracle.price>0&&h('span',{className:'ticker-change '+(oracle.change>=0?'up':'dn')},(oracle.change>=0?'+':'')+oracle.change.toFixed(2)+'%'),
+        h('span',{className:'ticker-ts'},'· actualizado '+tsLabel)
+      ),
+
+      // Métricas
+      h('div',{id:'metrics-section',className:'metrics'},
+        h('div',{className:'metric m-blue'},
+          h('div',{className:'metric-label'},'ARSt en circulación'),
+          h('div',{className:'metric-value'},metrics.supply>0?fmt(metrics.supply):'—'),
+          h('div',{className:'metric-sub'},'tokens emitidos')
+        ),
+        h('div',{className:'metric m-gold'},
+          h('div',{className:'metric-label'},'Reserva bancaria'),
+          h('div',{className:'metric-value'},metrics.reserve>0?'$'+fmt(metrics.reserve):'—'),
+          h('div',{className:'metric-sub'},'ARS en cuenta regulada')
+        ),
+        h('div',{className:'metric m-green'},
+          h('div',{className:'metric-label'},'Colateralización'),
+          h('div',{className:'metric-value'},metrics.collateral>0?metrics.collateral.toFixed(1)+'%':'—%'),
+          h('div',{className:'cbar'},h('div',{className:'cbar-fill',style:{width:Math.min(200,metrics.collateral)/2+'%'}})),
+          h('div',{className:'metric-sub'},'respaldo sobre emisión')
+        ),
+        h('div',{className:metrics.paused?'metric m-red':'metric m-muted'},
+          h('div',{className:'metric-label'},'Estado del protocolo'),
+          h('div',{className:'metric-value',style:{fontSize:'16px'}},metrics.paused?'PAUSADO':'ACTIVO'),
+          metrics.paused
+            ? h('div',{className:'metric-status-pause'},'⚠ Operaciones suspendidas')
+            : h('div',{className:'metric-status-ok'},'✓ Depósitos y retiros operativos')
+        )
+      )
+    ),
+
+    // About
+    h('div',{id:'about-section'},h(AboutSection)),
+
+    // Mi cuenta
+    h('div',{id:'account-section',className:'section'},
+      h('div',{className:'section-title'},'Mi cuenta'),
+
+      // Balance del usuario si está conectado
+      address&&h('div',{className:'user-balance-grid'},
+        h('div',{className:'user-stat'},
+          h('div',{className:'user-stat-label'},'Saldo ARSt'),
+          h('div',{className:'user-stat-value'},fmt(balance,2)),
+          h('div',{className:'user-stat-sub'},'tokens en tu wallet')
+        ),
+        h('div',{className:'user-stat'},
+          h('div',{className:'user-stat-label'},'Valor en pesos'),
+          h('div',{className:'user-stat-value'},'$'+fmt(balance)),
+          h('div',{className:'user-stat-sub'},'1 ARSt = 1 ARS')
+        ),
+        h('div',{className:'user-stat'},
+          h('div',{className:'user-stat-label'},'Valor en dólares'),
+          h('div',{className:'user-stat-value'},oracle.price>0?'U$D '+fmtUSD(balance/oracle.price):'—'),
+          h('div',{className:'user-stat-sub'},oracle.price>0?'al tipo oficial':'cargando precio...')
+        )
+      ),
+
+      // Tabs
+      h('div',{className:'tabs'},
+        ['deposit','send','withdraw','history'].map((t,i)=>h('button',{key:t,className:'tab'+(tab===t?' active':''),onClick:()=>setTab(t)},['Depositar','Enviar','Retirar','Historial'][i]))
+      ),
+
+      tab === 'deposit' && h(DepositTab, { address }),
+      tab === 'send' && h(SendTab, { address, balance, wallet }),
+      tab === 'withdraw' && h(WithdrawTab, { address, balance, wallet, oraclePrice: oracle.price }),
+      tab === 'history' && h(HistoryTab, { address, oraclePrice: oracle.price })
+    ),
+
+    // Footer
+    h('footer',null,
+      h('div',{className:'footer-left'},
+        h('span',{className:'dot dot-green dot-pulse'}),
+        'ARSt Protocol · testnet · ',
+        h('a',{href:`${EXPLORER}/package/${PACKAGE_ID}`,target:'_blank',style:{color:'var(--blue)',fontFamily:"'IBM Plex Mono',monospace",fontSize:'10px'}},'0x1937...375c')
+      ),
+      h('div',{className:'footer-links'},
+        h('a',{href:EXPLORER,target:'_blank'},'Explorer'),
+        h('a',{href:'https://github.com/ArikaToshimoto/ARSt-Backend',target:'_blank'},'GitHub'),
+        h('a',{href:'#about-section',onClick:e=>{e.preventDefault();document.getElementById('about-section')?.scrollIntoView({behavior:'smooth'})}},'Documentación')
+      )
+    )
+  );
+}
+
+createRoot(document.getElementById('root')).render(h(App));
+</script>
+</body>
+</html>
