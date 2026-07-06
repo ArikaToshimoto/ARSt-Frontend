@@ -188,6 +188,341 @@ const ARST_TYPE  = '0xe575e261548ffaeb811eb8115aca5e2fa4e0e780911f495701e9cb0600
 const EXPLORER   = 'https://testnet.suivision.xyz';
 const BACKEND    = 'https://arst-backend-production.up.railway.app';
 
+  // ── Traducciones ──────────────────────────────────────────────────────────────
+  const T = {
+    es: {
+      // Navbar
+      nav_what: '¿Qué es ARSt?',
+      nav_transparency: 'Transparencia',
+      nav_account: 'Mi cuenta',
+      nav_connect: 'Conectar wallet',
+      nav_disconnect: 'Desconectar wallet',
+      nav_network: 'testnet',
+
+      // Hero
+      hero_eyebrow: 'Peso argentino · Blockchain SUI · Respaldo 1 a 1',
+      hero_title_1: 'Tu ',
+      hero_title_2: 'peso',
+      hero_title_3: ' en la ',
+      hero_title_4: 'blockchain',
+      hero_sub: 'ARSt es una moneda digital respaldada 1 a 1 por pesos argentinos en cuenta bancaria. Depositá, retirá y usá tus pesos sin intermediarios.',
+      hero_oracle_label: 'Precio USD oficial',
+      hero_oracle_unit: 'ARS',
+      hero_updated: 'actualizado',
+      hero_now: 'ahora',
+      hero_min_ago: 'hace {n} min',
+      hero_hour_ago: 'hace {n}h',
+
+      // Métricas
+      m_supply: 'ARSt en circulación',
+      m_supply_sub: 'tokens emitidos',
+      m_reserve: 'Reserva bancaria',
+      m_reserve_sub: 'ARS en cuenta regulada',
+      m_collateral: 'Colateralización',
+      m_collateral_sub: 'respaldo sobre emisión',
+      m_status: 'Estado del protocolo',
+      m_status_ok: '✓ Depósitos y retiros operativos',
+      m_status_paused: '⚠ Operaciones suspendidas',
+      m_active: 'ACTIVO',
+      m_paused: 'PAUSADO',
+
+      // About
+      about_title: 'Qué es ARSt',
+      about_1_title: 'ARSt, el peso en la blockchain',
+      about_1_p1: 'ARSt es una moneda digital que vale exactamente lo mismo que un peso argentino. Por cada ARSt que existe, hay un peso argentino guardado en una cuenta bancaria real en Argentina.',
+      about_1_p2: 'Podés usarlo para guardar pesos sin depender de un banco, enviarlo a cualquier persona en el mundo en segundos, y recuperar tus pesos cuando quieras.',
+      about_2_title: 'Cómo funciona',
+      about_2_s1: 'Depositás pesos',
+      about_2_s1_desc: ' — Pagás con Mercado Pago y recibís ARSt automáticamente en tu wallet.',
+      about_2_s2: 'Los ARSt quedan en tu wallet',
+      about_2_s2_desc: ' — Son tuyos, nadie los puede mover sin tu firma.',
+      about_2_s3: 'Retirás cuando quieras',
+      about_2_s3_desc: ' — Solicitás el retiro con tu CBU y recibís los pesos en tu cuenta bancaria.',
+      about_3_title: 'Cómo está respaldado',
+      about_3_p1: 'Por cada ARSt en circulación, hay exactamente un peso argentino depositado en una cuenta bancaria regulada en Argentina. Esta reserva es pública y verificable en tiempo real en la blockchain.',
+      about_3_p2: 'No hay "magia financiera" ni apalancamiento: el respaldo es 1 a 1, siempre.',
+      about_4_title: 'Seguridad técnica',
+      about_4_p1: 'El contrato inteligente que controla ARSt tiene múltiples capas de seguridad para proteger tu dinero:',
+
+      // Account
+      account_title: 'Mi cuenta',
+      stat_balance: 'Saldo ARSt',
+      stat_balance_sub: 'tokens en tu wallet',
+      stat_ars: 'Valor en pesos',
+      stat_ars_sub: '1 ARSt = 1 ARS',
+      stat_usd: 'Valor en dólares',
+      stat_usd_sub: 'al tipo oficial',
+      stat_usd_loading: 'cargando precio...',
+
+      // Tabs
+      tab_deposit: 'Depositar',
+      tab_send: 'Enviar',
+      tab_withdraw: 'Retirar',
+      tab_history: 'Historial',
+
+      // Wallet modal
+      modal_title: 'Conectar wallet',
+      modal_sub: 'Conectá tu wallet SUI para ver tu saldo, depositar y retirar.',
+      modal_detected: 'Detectada · click para conectar',
+      modal_not_detected: 'No detectada · ',
+      modal_manual_label: 'O ingresá tu dirección SUI',
+      modal_manual_btn: 'Conectar con dirección',
+      modal_invalid: 'Dirección inválida (0x + 64 caracteres)',
+
+      // Deposit
+      deposit_step1_num: 'PASO 01',
+      deposit_step1_title: 'Ingresá el monto',
+      deposit_step1_desc: 'Indicá cuántos pesos querés convertir a ARSt. Mínimo $100 ARS.',
+      deposit_step2_num: 'PASO 02',
+      deposit_step2_title: 'Pagá con Mercado Pago',
+      deposit_step2_desc: 'Se abre el checkout de MP. Al confirmarse el pago, tus ARSt llegan automáticamente.',
+      deposit_amount_label: '¿Cuántos pesos querés depositar?',
+      deposit_amount_hint: '1 ARS = 1 ARSt · Mínimo $100 ARS',
+      deposit_preview: 'Vas a recibir',
+      deposit_wallet_label: '📍 Tu wallet: ',
+      deposit_btn: 'Pagar con Mercado Pago →',
+      deposit_processing: 'Procesando...',
+      deposit_no_wallet_title: 'Conectá tu wallet',
+      deposit_no_wallet_desc: 'Necesitás conectar una wallet SUI para recibir ARSt en tu cuenta.',
+
+      // Send
+      send_no_wallet_title: 'Conectá tu wallet',
+      send_no_wallet_desc: 'Necesitás conectar una wallet SUI para enviar ARSt.',
+      send_balance_label: 'Saldo disponible',
+      send_to_label: 'Dirección SUI destino',
+      send_to_hint: 'La dirección SUI de quien va a recibir los ARSt',
+      send_amount_label: '¿Cuántos ARSt querés enviar?',
+      send_preview: 'Vas a enviar',
+      send_info: 'ℹ️ El envío es instantáneo y sin costo adicional más allá del gas de SUI (fracciones de centavo).',
+      send_btn: 'Enviar ARSt',
+      send_building: 'Preparando...',
+      send_signing: 'Esperando firma...',
+      send_retry: 'Reintentar',
+      send_success_title: 'Envío exitoso',
+      send_success_desc: 'Enviaste {amount} ARSt a {addr}',
+      send_explorer: 'Ver transacción →',
+      send_new: 'Nuevo envío',
+      send_err_invalid_addr: 'Dirección destino inválida',
+      send_err_self: 'No podés enviarte ARSt a vos mismo',
+      send_err_invalid_amount: 'Ingresá un monto válido',
+      send_err_insufficient: 'Saldo insuficiente',
+      send_err_no_wallet: 'Wallet no disponible. Reconectá.',
+      send_err_no_coins: 'No tenés ARSt en tu wallet',
+      send_err_single_coin: 'Saldo insuficiente en un solo coin',
+      send_err_no_support: 'La wallet no soportó la operación',
+
+      // Withdraw
+      withdraw_no_wallet_title: 'Conectá tu wallet',
+      withdraw_no_wallet_desc: 'Conectá tu wallet SUI para solicitar el retiro de tus pesos.',
+      withdraw_balance_label: 'Saldo disponible',
+      withdraw_max: 'Máximo',
+      withdraw_amount_label: '¿Cuántos ARSt querés retirar?',
+      withdraw_cbu_label: 'CBU / CVU destino',
+      withdraw_cbu_hint: '22 dígitos · CBU o CVU de tu banco o Mercado Pago',
+      withdraw_preview: 'Vas a recibir',
+      withdraw_warn: '⚠️ Los retiros se procesan manualmente dentro de las 24 horas hábiles. Verificá que el CBU sea correcto antes de confirmar.',
+      withdraw_btn: 'Solicitar retiro',
+      withdraw_signing: 'Esperando firma...',
+      withdraw_sending: 'Enviando...',
+      withdraw_retry: 'Reintentar',
+      withdraw_success_manual_title: 'Solicitud registrada',
+      withdraw_success_manual_desc: 'Tu retiro de {amount} ARS al CBU {cbu} fue registrado. Lo procesamos en 24hs hábiles.',
+      withdraw_success_title: 'Retiro enviado',
+      withdraw_success_desc: 'Quema de {amount} ARSt ejecutada. Recibirás {amount} ARS en tu CBU.',
+      withdraw_explorer: 'Ver transacción en explorer →',
+      withdraw_new: 'Nueva solicitud',
+
+      // History
+      history_no_wallet_title: 'Conectá tu wallet',
+      history_no_wallet_desc: 'Conectá tu wallet para ver tu historial de transacciones.',
+      history_loading: 'Cargando historial...',
+      history_empty: 'Sin transacciones todavía. Hacé tu primer depósito.',
+      history_th_date: 'Fecha',
+      history_th_type: 'Tipo',
+      history_th_arst: 'ARSt',
+      history_th_ars: 'Valor ARS',
+      history_th_status: 'Estado',
+      history_th_tx: 'TX',
+      history_type_deposit: 'DEPÓSITO',
+      history_status_done: 'Completado',
+
+      // Footer
+      footer_protocol: 'ARSt Protocol · testnet · ',
+      footer_explorer: 'Explorer',
+      footer_docs: 'Documentación',
+    },
+
+    en: {
+      // Navbar
+      nav_what: 'What is ARSt?',
+      nav_transparency: 'Transparency',
+      nav_account: 'My account',
+      nav_connect: 'Connect wallet',
+      nav_disconnect: 'Disconnect wallet',
+      nav_network: 'testnet',
+
+      // Hero
+      hero_eyebrow: 'Argentine Peso · SUI Blockchain · 1-to-1 Backed',
+      hero_title_1: 'Your ',
+      hero_title_2: 'peso',
+      hero_title_3: ' on the ',
+      hero_title_4: 'blockchain',
+      hero_sub: 'ARSt is a digital currency backed 1-to-1 by Argentine pesos in a regulated bank account. Deposit, withdraw and use your pesos without intermediaries.',
+      hero_oracle_label: 'Official USD rate',
+      hero_oracle_unit: 'ARS',
+      hero_updated: 'updated',
+      hero_now: 'just now',
+      hero_min_ago: '{n} min ago',
+      hero_hour_ago: '{n}h ago',
+
+      // Métricas
+      m_supply: 'ARSt in circulation',
+      m_supply_sub: 'tokens issued',
+      m_reserve: 'Bank reserve',
+      m_reserve_sub: 'ARS in regulated account',
+      m_collateral: 'Collateralization',
+      m_collateral_sub: 'backing ratio',
+      m_status: 'Protocol status',
+      m_status_ok: '✓ Deposits and withdrawals active',
+      m_status_paused: '⚠ Operations suspended',
+      m_active: 'ACTIVE',
+      m_paused: 'PAUSED',
+
+      // About
+      about_title: 'What is ARSt',
+      about_1_title: 'ARSt, the peso on the blockchain',
+      about_1_p1: 'ARSt is a digital currency worth exactly the same as one Argentine peso. For every ARSt that exists, there is one Argentine peso held in a real bank account in Argentina.',
+      about_1_p2: 'You can use it to hold pesos without depending on a bank, send it to anyone in the world in seconds, and get your pesos back whenever you want.',
+      about_2_title: 'How it works',
+      about_2_s1: 'Deposit pesos',
+      about_2_s1_desc: ' — Pay with Mercado Pago and automatically receive ARSt in your wallet.',
+      about_2_s2: 'ARSt stays in your wallet',
+      about_2_s2_desc: ' — They\'re yours, nobody can move them without your signature.',
+      about_2_s3: 'Withdraw whenever you want',
+      about_2_s3_desc: ' — Request a withdrawal with your bank account and receive pesos.',
+      about_3_title: 'How it\'s backed',
+      about_3_p1: 'For every ARSt in circulation, there is exactly one Argentine peso deposited in a regulated bank account in Argentina. This reserve is public and verifiable in real time on the blockchain.',
+      about_3_p2: 'No financial tricks or leverage: the backing is always 1 to 1.',
+      about_4_title: 'Technical security',
+      about_4_p1: 'The smart contract that controls ARSt has multiple security layers to protect your money:',
+
+      // Account
+      account_title: 'My account',
+      stat_balance: 'ARSt balance',
+      stat_balance_sub: 'tokens in your wallet',
+      stat_ars: 'Value in pesos',
+      stat_ars_sub: '1 ARSt = 1 ARS',
+      stat_usd: 'Value in USD',
+      stat_usd_sub: 'at official rate',
+      stat_usd_loading: 'loading price...',
+
+      // Tabs
+      tab_deposit: 'Deposit',
+      tab_send: 'Send',
+      tab_withdraw: 'Withdraw',
+      tab_history: 'History',
+
+      // Wallet modal
+      modal_title: 'Connect wallet',
+      modal_sub: 'Connect your SUI wallet to see your balance, deposit and withdraw.',
+      modal_detected: 'Detected · click to connect',
+      modal_not_detected: 'Not detected · ',
+      modal_manual_label: 'Or enter your SUI address',
+      modal_manual_btn: 'Connect with address',
+      modal_invalid: 'Invalid address (0x + 64 characters)',
+
+      // Deposit
+      deposit_step1_num: 'STEP 01',
+      deposit_step1_title: 'Enter amount',
+      deposit_step1_desc: 'Enter how many pesos you want to convert to ARSt. Minimum $100 ARS.',
+      deposit_step2_num: 'STEP 02',
+      deposit_step2_title: 'Pay with Mercado Pago',
+      deposit_step2_desc: 'The MP checkout opens. Once the payment is confirmed, your ARSt arrive automatically.',
+      deposit_amount_label: 'How many pesos do you want to deposit?',
+      deposit_amount_hint: '1 ARS = 1 ARSt · Minimum $100 ARS',
+      deposit_preview: 'You will receive',
+      deposit_wallet_label: '📍 Your wallet: ',
+      deposit_btn: 'Pay with Mercado Pago →',
+      deposit_processing: 'Processing...',
+      deposit_no_wallet_title: 'Connect your wallet',
+      deposit_no_wallet_desc: 'You need to connect a SUI wallet to receive ARSt.',
+
+      // Send
+      send_no_wallet_title: 'Connect your wallet',
+      send_no_wallet_desc: 'You need to connect a SUI wallet to send ARSt.',
+      send_balance_label: 'Available balance',
+      send_to_label: 'Destination SUI address',
+      send_to_hint: 'The SUI address of the recipient',
+      send_amount_label: 'How many ARSt do you want to send?',
+      send_preview: 'You will send',
+      send_info: 'ℹ️ Transfers are instant and free beyond SUI gas fees (fractions of a cent).',
+      send_btn: 'Send ARSt',
+      send_building: 'Preparing...',
+      send_signing: 'Waiting for signature...',
+      send_retry: 'Retry',
+      send_success_title: 'Transfer successful',
+      send_success_desc: 'You sent {amount} ARSt to {addr}',
+      send_explorer: 'View transaction →',
+      send_new: 'New transfer',
+      send_err_invalid_addr: 'Invalid destination address',
+      send_err_self: 'You cannot send ARSt to yourself',
+      send_err_invalid_amount: 'Enter a valid amount',
+      send_err_insufficient: 'Insufficient balance',
+      send_err_no_wallet: 'Wallet not available. Reconnect.',
+      send_err_no_coins: 'You have no ARSt in your wallet',
+      send_err_single_coin: 'Insufficient balance in a single coin',
+      send_err_no_support: 'The wallet did not support this operation',
+
+      // Withdraw
+      withdraw_no_wallet_title: 'Connect your wallet',
+      withdraw_no_wallet_desc: 'Connect your SUI wallet to request a withdrawal.',
+      withdraw_balance_label: 'Available balance',
+      withdraw_max: 'Max',
+      withdraw_amount_label: 'How many ARSt do you want to withdraw?',
+      withdraw_cbu_label: 'Destination CBU / CVU',
+      withdraw_cbu_hint: '22 digits · Bank account or Mercado Pago CVU',
+      withdraw_preview: 'You will receive',
+      withdraw_warn: '⚠️ Withdrawals are processed manually within 24 business hours. Verify the account number before confirming.',
+      withdraw_btn: 'Request withdrawal',
+      withdraw_signing: 'Waiting for signature...',
+      withdraw_sending: 'Sending...',
+      withdraw_retry: 'Retry',
+      withdraw_success_manual_title: 'Request registered',
+      withdraw_success_manual_desc: 'Your withdrawal of {amount} ARS to CBU {cbu} was registered. We\'ll process it within 24 business hours.',
+      withdraw_success_title: 'Withdrawal sent',
+      withdraw_success_desc: 'Burn of {amount} ARSt executed. You will receive {amount} ARS in your account.',
+      withdraw_explorer: 'View transaction in explorer →',
+      withdraw_new: 'New request',
+
+      // History
+      history_no_wallet_title: 'Connect your wallet',
+      history_no_wallet_desc: 'Connect your wallet to see your transaction history.',
+      history_loading: 'Loading history...',
+      history_empty: 'No transactions yet. Make your first deposit.',
+      history_th_date: 'Date',
+      history_th_type: 'Type',
+      history_th_arst: 'ARSt',
+      history_th_ars: 'ARS value',
+      history_th_status: 'Status',
+      history_th_tx: 'TX',
+      history_type_deposit: 'DEPOSIT',
+      history_status_done: 'Completed',
+
+      // Footer
+      footer_protocol: 'ARSt Protocol · testnet · ',
+      footer_explorer: 'Explorer',
+      footer_docs: 'Documentation',
+    }
+  };
+
+  function tr(lang, key, vars = {}) {
+    let str = T[lang]?.[key] || T['es'][key] || key;
+    for (const [k, v] of Object.entries(vars)) {
+      str = str.replace(`{${k}}`, v);
+    }
+    return str;
+  }
+
 async function rpc(method, params) {
   const r = await fetch(SUI_RPC,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method,params})});
   return (await r.json()).result;
@@ -304,7 +639,7 @@ function shortAddr(a){return a.slice(0,6)+'...'+a.slice(-4)}
   }
 
 // ── WalletModal ───────────────────────────────────────────────────────────────
-function WalletModal({onConnect,onClose}) {
+function WalletModal({onConnect,onClose, lang}) {
   const [addr,setAddr]=useState('');const [err,setErr]=useState('');const [wallets,setWallets]=useState([]);
   useEffect(()=>{
     const d=()=>setWallets(getWallets());d();
@@ -312,12 +647,12 @@ function WalletModal({onConnect,onClose}) {
     const t=setTimeout(d,600);
     return()=>{window.removeEventListener('wallet-standard:register-wallet',d);clearTimeout(t);};
   },[]);
-  const tryManual=()=>{const a=addr.trim();if(!a.startsWith('0x')||a.length!==66){setErr('Dirección inválida (0x + 64 caracteres)');return;}onConnect({address:a,ref:null,type:'manual'});};
+  const tryManual=()=>{const a=addr.trim();if(!a.startsWith('0x')||a.length!==66){setErr(tr(lang,'modal_invalid'));return;}onConnect({address:a,ref:null,type:'manual'});};
   const known=[{name:'Nightly',sub:'nightly.app',icon:'🌙'},{name:'Noir Wallet',sub:'Chrome Extension',icon:'⬛'},{name:'Phantom',sub:'phantom.app',icon:'👻'}];
   return h('div',{className:'wallet-modal',onClick:onClose},
     h('div',{className:'wallet-modal-inner',onClick:e=>e.stopPropagation()},
-      h('h3',null,'Conectar wallet'),
-      h('p',null,'Conectá tu wallet SUI para ver tu saldo, depositar y retirar.'),
+      h('h3',null,tr(lang,'modal_title')),
+      h('p',null,tr(lang,'modal_sub')),
       wallets.length>0
         ? wallets.map((w,i)=>h('div',{key:i,className:'wallet-option',onClick:()=>connectWallet(w,onConnect,setErr)},
             h('div',{className:'wallet-option-icon'},
@@ -325,66 +660,60 @@ function WalletModal({onConnect,onClose}) {
             ? h('img',{src:w.icon,alt:w.name})
             : h('span',null,w.icon||(w.name[0]))
           ),
-            h('div',null,h('div',{className:'wallet-option-name'},w.name),h('div',{className:'wallet-option-sub'},'Detectada · click para conectar'))
+            h('div',null,h('div',{className:'wallet-option-name'},w.name),h('div',{className:'wallet-option-sub'},tr(lang,'modal_detected')))
           ))
         : known.map((w,i)=>h('div',{key:i,className:'wallet-option disabled'},
             h('div',{className:'wallet-option-icon'},w.icon),
-            h('div',null,h('div',{className:'wallet-option-name'},w.name),h('div',{className:'wallet-option-sub'},'No detectada · '+w.sub))
+            h('div',null,h('div',{className:'wallet-option-name'},w.name),h('div',{className:'wallet-option-sub'},tr(lang,'modal_not_detected')+w.sub))
           )),
       h('div',{className:'divider'}),
-      h('div',{className:'field-label'},'O ingresá tu dirección SUI'),
+      h('div',{className:'field-label'},tr(lang,'modal_manual_label')),
       h('input',{className:'field-input',placeholder:'0x...',value:addr,onChange:e=>{setAddr(e.target.value);setErr('');}}),
       err&&h('div',{style:{color:'var(--red)',fontSize:'11px',marginTop:'6px'}},err),
-      h('button',{className:'btn btn-primary',style:{width:'100%',padding:'12px',marginTop:'14px'},onClick:tryManual},'Conectar con dirección')
+      h('button',{className:'btn btn-primary',style:{width:'100%',padding:'12px',marginTop:'14px'},onClick:tryManual},tr(lang,'modal_manual_btn'))
     )
   );
 }
 
 // ── About Section ─────────────────────────────────────────────────────────────
-function AboutSection() {
-  return h('div',{className:'about'},
-    h('div',{className:'section-title'},'Qué es ARSt'),
-    h('div',{className:'about-grid'},
-      // Card 1: Qué es
-      h('div',{className:'about-card'},
-        h('h3',null,h('div',{className:'icon',style:{background:'var(--gold-dim)'}},h('span',null,'₳')),'ARSt, el peso en la blockchain'),
-        h('p',null,'ARSt es una moneda digital que vale exactamente lo mismo que un peso argentino. Por cada ARSt que existe, hay un peso argentino guardado en una cuenta bancaria real en Argentina.'),
-        h('p',null,'Podés usarlo para guardar pesos sin depender de un banco, enviarlo a cualquier persona en el mundo en segundos, y recuperar tus pesos cuando quieras.')
-      ),
-      // Card 2: Cómo funciona
-      h('div',{className:'about-card'},
-        h('h3',null,h('div',{className:'icon',style:{background:'var(--blue-dim)'}},h('span',null,'⟳')),'Cómo funciona'),
-        h('ol',{className:'about-steps'},
-          h('li',null,h('span',null,h('strong',null,'Depositás pesos'),' — Pagás con Mercado Pago y recibís ARSt automáticamente en tu wallet.')),
-          h('li',null,h('span',null,h('strong',null,'Los ARSt quedan en tu wallet'),' — Son tuyos, nadie los puede mover sin tu firma.')),
-          h('li',null,h('span',null,h('strong',null,'Retirás cuando quieras'),' — Solicitás el retiro con tu CBU y recibís los pesos en tu cuenta bancaria.'))
-        )
-      ),
-      // Card 3: Respaldo
-      h('div',{className:'about-card'},
-        h('h3',null,h('div',{className:'icon',style:{background:'var(--green-dim)'}},h('span',null,'🏦')),'Cómo está respaldado'),
-        h('p',null,'Por cada ARSt en circulación, hay exactamente un peso argentino depositado en una cuenta bancaria regulada en Argentina. Esta reserva es pública y verificable en tiempo real en la blockchain.'),
-        h('p',null,'No hay "magia financiera" ni apalancamiento: el respaldo es 1 a 1, siempre.')
-      ),
-      // Card 4: Seguridad
-      h('div',{className:'about-card'},
-        h('h3',null,h('div',{className:'icon',style:{background:'var(--blue-dim)'}},h('span',null,'🔒')),'Seguridad técnica'),
-        h('p',null,'El contrato inteligente que controla ARSt tiene múltiples capas de seguridad para proteger tu dinero:'),
-        h('div',{className:'security-badges'},
-          h('span',{className:'badge-security'},'Multifirma 2 de 3'),
-          h('span',{className:'badge-security'},'Timelock 48hs'),
-          h('span',{className:'badge-security'},'Reserva on-chain'),
-          h('span',{className:'badge-security'},'Código abierto'),
-          h('span',{className:'badge-security'},'Sin admin unilateral'),
-          h('span',{className:'badge-security'},'Pausa de emergencia')
+  function AboutSection({ lang }) {
+    return h('div', { className: 'about' },
+      h('div', { className: 'section-title' }, tr(lang, 'about_title')),
+      h('div', { className: 'about-grid' },
+        h('div', { className: 'about-card' },
+          h('h3', null, h('div', { className: 'icon', style: { background: 'var(--gold-dim)' } }, '₳'), tr(lang, 'about_1_title')),
+          h('p', null, tr(lang, 'about_1_p1')),
+          h('p', null, tr(lang, 'about_1_p2'))
+        ),
+        h('div', { className: 'about-card' },
+          h('h3', null, h('div', { className: 'icon', style: { background: 'var(--blue-dim)' } }, '⟳'), tr(lang, 'about_2_title')),
+          h('ol', { className: 'about-steps' },
+            h('li', null, h('span', null, h('strong', null, tr(lang, 'about_2_s1')), tr(lang, 'about_2_s1_desc'))),
+            h('li', null, h('span', null, h('strong', null, tr(lang, 'about_2_s2')), tr(lang, 'about_2_s2_desc'))),
+            h('li', null, h('span', null, h('strong', null, tr(lang, 'about_2_s3')), tr(lang, 'about_2_s3_desc')))
+          )
+        ),
+        h('div', { className: 'about-card' },
+          h('h3', null, h('div', { className: 'icon', style: { background: 'var(--green-dim)' } }, '🏦'), tr(lang, 'about_3_title')),
+          h('p', null, tr(lang, 'about_3_p1')),
+          h('p', null, tr(lang, 'about_3_p2'))
+        ),
+        h('div', { className: 'about-card' },
+          h('h3', null, h('div', { className: 'icon', style: { background: 'var(--blue-dim)' } }, '🔒'), tr(lang, 'about_4_title')),
+          h('p', null, tr(lang, 'about_4_p1')),
+          h('div', { className: 'security-badges' },
+            lang === 'es'
+              ? ['Multifirma 2 de 3', 'Timelock 48hs', 'Reserva on-chain', 'Código abierto', 'Sin admin unilateral', 'Pausa de emergencia']
+              : ['2-of-3 Multisig', '48h Timelock', 'On-chain reserve', 'Open source', 'No unilateral admin', 'Emergency pause']
+                .map((b, i) => h('span', { key: i, className: 'badge-security' }, b))
+          )
         )
       )
-    )
-  );
-}
+    );
+  }
 
   // ── SendTab ───────────────────────────────────────────────────────────────────
-  function SendTab({ address, balance, wallet }) {
+  function SendTab({ address, balance, wallet,lang }) {
     const [to, setTo] = useState('');
     const [amount, setAmount] = useState('');
     const [status, setStatus] = useState('idle');
@@ -393,18 +722,18 @@ function AboutSection() {
 
     if (!address) return h('div', { className: 'panel' }, h('div', { className: 'wallet-prompt' },
       h('div', { className: 'wallet-icon' }, '📤'),
-      h('h3', null, 'Conectá tu wallet'),
-      h('p', null, 'Necesitás conectar una wallet SUI para enviar ARSt.')
+      h('h3', null, tr(lang, 'send_no_wallet_title')),
+      h('p', null, tr(lang, 'send_no_wallet_desc'))
     ));
 
     const preview = parseFloat(amount) || 0;
 
     const submit = async () => {
-      if (!to || !to.startsWith('0x') || to.length !== 66) { alert('Dirección destino inválida'); return; }
-      if (to === address) { alert('No podés enviarte ARSt a vos mismo'); return; }
-      if (!preview || preview <= 0) { alert('Ingresá un monto válido'); return; }
-      if (preview > balance) { alert('Saldo insuficiente'); return; }
-      if (!wallet?.ref && wallet?.type !== 'manual') { alert('Wallet no disponible. Reconectá.'); return; }
+      if (!to || !to.startsWith('0x') || to.length !== 66) { alert(tr(lang, 'send_err_invalid_addr')); return; }
+      if (to === address) { alert(tr(lang, 'send_err_self')); return; }
+      if (!preview || preview <= 0) { alert(tr(lang, 'send_err_invalid_amount')); return; }
+      if (preview > balance) { alert(tr(lang, 'send_err_insufficient')); return; }
+      if (!wallet?.ref && wallet?.type !== 'manual') { alert(tr(lang, 'send_err_no_wallet')); return; }
 
       setStatus('building'); setErrMsg('');
 
@@ -414,11 +743,11 @@ function AboutSection() {
         // Obtener coins ARSt del usuario
         const coinsRes = await rpc('suix_getCoins', [address, ARST_TYPE, null, 10]);
         const coins = coinsRes?.data || [];
-        if (!coins.length) throw new Error('No tenés ARSt en tu wallet');
+        if (!coins.length) throw new Error(tr(lang, 'send_err_no_coins'));
 
         const sorted = coins.sort((a, b) => Number(BigInt(b.balance) - BigInt(a.balance)));
         const coin = sorted.find(c => parseInt(c.balance) >= amountUnits);
-        if (!coin) throw new Error('Saldo insuficiente en un solo coin');
+        if (!coin) throw new Error(tr(lang, 'send_err_single_coin'));
 
         setStatus('signing');
 
@@ -473,7 +802,7 @@ function AboutSection() {
         }
 
         // Slush puede devolver el digest directamente o dentro de effects
-        if (!result && result !== null) throw new Error('La wallet no soportó la operación');
+        if (!result && result !== null) throw new Error(tr(lang, 'send_err_no_support'));
 
         const digest = result?.digest || result?.effects?.transactionDigest || result?.transaction?.txid || 'completado';
         setTxDigest(digest || 'ok');
@@ -486,33 +815,33 @@ function AboutSection() {
       }
     };
 
-       
+   
 
     if (status === 'done') return h('div', { className: 'panel' }, h('div', { className: 'wallet-prompt' },
       h('div', { className: 'wallet-icon' }, '✅'),
-      h('h3', null, 'Envío exitoso'),
-      h('p', null, `Enviaste ${fmt(preview, 2)} ARSt a ${shortAddr(to)}`),
-      txDigest && h('a', { className: 'tx-link', href: `${EXPLORER}/txblock/${txDigest}`, target: '_blank', style: { display: 'block', marginTop: '12px' } }, 'Ver transacción →'),
-      h('button', { className: 'btn btn-outline', style: { marginTop: '20px' }, onClick: () => { setStatus('idle'); setTo(''); setAmount(''); } }, 'Nuevo envío')
+      h('h3', null, tr(lang, 'send_success_title')),
+      h('p', null, tr(lang, 'send_success_desc', { amount: fmt(preview, 2), addr: shortAddr(to) })),
+      txDigest && h('a', { className: 'tx-link', href: `${EXPLORER}/txblock/${txDigest}`, target: '_blank', style: { display: 'block', marginTop: '12px' } }, tr(lang, 'send_explorer')),
+      h('button', { className: 'btn btn-outline', style: { marginTop: '20px' }, onClick: () => { setStatus('idle'); setTo(''); setAmount(''); } }, tr(lang, 'send_new'))
     ));
 
     const btnLabel = {
-      idle: 'Enviar ARSt',
-      building: 'Preparando...',
-      signing: 'Esperando firma...',
-      error: 'Reintentar'
-    }[status] || 'Enviar ARSt';
+      idle: tr(lang, 'withdraw_btn'),
+      signing: tr(lang, 'withdraw_signing'),
+      sending: tr(lang, 'withdraw_sending'),
+      error: tr(lang, 'withdraw_retry')
+    }[status] || tr(lang, 'withdraw_btn');
 
     return h('div', { className: 'panel' },
       h('div', { className: 'gap3' },
         h('div', { className: 'balance-display' },
           h('div', null,
-            h('div', { className: 'bl' }, 'Saldo disponible'),
+            h('div', { className: 'bl' }, tr(lang, 'send_balance_label')),
             h('div', { className: 'bv' }, fmt(balance, 2) + ' ARSt')
           )
         ),
         h('div', null,
-          h('div', { className: 'field-label' }, 'Dirección SUI destino'),
+          h('div', { className: 'field-label' }, tr(lang, 'send_to_label')),
           h('input', {
             className: 'field-input',
             type: 'text',
@@ -520,10 +849,10 @@ function AboutSection() {
             value: to,
             onChange: e => setTo(e.target.value.trim())
           }),
-          h('div', { className: 'field-hint' }, 'La dirección SUI de quien va a recibir los ARSt')
+          h('div', { className: 'field-hint' }, tr(lang, 'send_to_hint'))
         ),
         h('div', null,
-          h('div', { className: 'field-label' }, '¿Cuántos ARSt querés enviar?'),
+          h('div', { className: 'field-label' }, tr(lang, 'send_amount_label') ),
           h('input', {
             className: 'field-input',
             type: 'number',
@@ -535,11 +864,11 @@ function AboutSection() {
           })
         ),
         h('div', { className: 'amount-preview' },
-          h('span', { className: 'lbl' }, 'Vas a enviar'),
+          h('span', { className: 'lbl' }, tr(lang, 'send_preview')),
           h('span', { className: 'val' }, preview > 0 ? fmt(preview, 2) + ' ARSt' : '— ARSt')
         ),
         errMsg && h('div', { className: 'alert alert-error' }, '❌ ' + errMsg),
-        h('div', { className: 'alert alert-info' }, 'ℹ️ El envío es instantáneo y sin costo adicional más allá del gas de SUI (fracciones de centavo).'),
+        h('div', { className: 'alert alert-info' }, tr(lang, 'send_info')),
         h('button', {
           className: 'btn btn-primary',
           style: { width: '100%', padding: '14px' },
@@ -551,7 +880,7 @@ function AboutSection() {
   }
 
 // ── DepositTab ────────────────────────────────────────────────────────────────
-function DepositTab({address}) {
+function DepositTab({address, lang}) {
   const [amount,setAmount]=useState('');const [loading,setLoading]=useState(false);const [success,setSuccess]=useState('');
   const preview=parseFloat(amount)||0;
   const openMP=async()=>{
@@ -564,32 +893,45 @@ function DepositTab({address}) {
     }catch(e){setSuccess(`Para testnet, enviá un pago de prueba con descripción:\nARSt:${address}`);}
     finally{setLoading(false);}
   };
-  if(!address) return h('div',{className:'panel'},h('div',{className:'wallet-prompt'},h('div',{className:'wallet-icon'},'🔗'),h('h3',null,'Conectá tu wallet'),h('p',null,'Necesitás conectar una wallet SUI para recibir ARSt en tu cuenta.')));
+  if(!address) return h('div',{className:'panel'},h('div',{className:'wallet-prompt'},h('div',{className:'wallet-icon'},'🔗'), h('h3', null, tr(lang, 'deposit_no_wallet_title')),
+    h('p', null, tr(lang, 'deposit_no_wallet_desc'))));
   return h('div',{className:'panel'},
-    h('div',{className:'deposit-steps'},
-      h('div',{className:'step'},h('div',{className:'step-num'},'PASO 01'),h('h4',null,'Ingresá el monto'),h('p',null,'Indicá cuántos pesos querés convertir a ARSt. Mínimo $100 ARS.')),
-      h('div',{className:'step'},h('div',{className:'step-num'},'PASO 02'),h('h4',null,'Pagá con Mercado Pago'),h('p',null,'Se abre el checkout de MP. Al confirmarse el pago, tus ARSt llegan automáticamente.'))
+   h('div', { className: 'deposit-steps' },
+      h('div', { className: 'step' },
+        h('div', { className: 'step-num' }, tr(lang, 'deposit_step1_num')),
+        h('h4', null, tr(lang, 'deposit_step1_title')),
+        h('p', null, tr(lang, 'deposit_step1_desc'))
+      ),
+      h('div', { className: 'step' },
+        h('div', { className: 'step-num' }, tr(lang, 'deposit_step2_num')),
+        h('h4', null, tr(lang, 'deposit_step2_title')),
+        h('p', null, tr(lang, 'deposit_step2_desc'))
+      )
     ),
+
     h('div',{className:'divider'}),
     h('div',{className:'gap3'},
       h('div',null,
-        h('div',{className:'field-label'},'¿Cuántos pesos querés depositar?'),
+        h('div',{className:'field-label'},tr(lang,'deposit_amount_label')),
         h('input',{className:'field-input',type:'number',placeholder:'1000',min:100,step:100,value:amount,onChange:e=>setAmount(e.target.value)}),
-        h('div',{className:'field-hint'},'1 ARS = 1 ARSt · Mínimo $100 ARS')
+        h('div',{className:'field-hint'},tr(lang,'deposit_amount_hint'))
       ),
-      h('div',{className:'amount-preview'},h('span',{className:'lbl'},'Vas a recibir'),h('span',{className:'val'},preview>=100?fmt(preview)+' ARSt':'— ARSt')),
-      h('div',{className:'alert alert-info'},'📍 Tu wallet: ',h('span',{style:{color:'var(--blue)',fontFamily:"'IBM Plex Mono',monospace",fontSize:'11px'}},address.slice(0,12)+'...'+address.slice(-8))),
+      h('div',{className:'amount-preview'},h('span',{className:'lbl'},tr(lang,'deposit_preview')),h('span',{className:'val'},preview>=100?fmt(preview)+' ARSt':'— ARSt')),
+      h('div',{className:'alert alert-info'},tr(lang,'deposit_wallet_label'),h('span',{style:{color:'var(--blue)',fontFamily:"'IBM Plex Mono',monospace",fontSize:'11px'}},address.slice(0,12)+'...'+address.slice(-8))),
       success&&h('div',{className:'alert alert-success'},h('pre',{style:{fontSize:'11px',whiteSpace:'pre-wrap'}},success)),
-      h('button',{className:'btn btn-gold',style:{width:'100%',padding:'14px'},onClick:openMP,disabled:loading},loading?'Procesando...':'Pagar con Mercado Pago →')
+      h('button',{className:'btn btn-gold',style:{width:'100%',padding:'14px'},onClick:openMP,disabled:loading},loading?tr(lang,'deposit_processing'):tr(lang,'deposit_btn'))
     )
   );
 }
 
 // ── WithdrawTab ───────────────────────────────────────────────────────────────
-function WithdrawTab({address,balance,wallet,oraclePrice}) {
+function WithdrawTab({address,balance,wallet,oraclePrice,lang}) {
   const [amount,setAmount]=useState('');const [cbu,setCbu]=useState('');
-  const [status,setStatus]=useState('idle');const [txDigest,setTxDigest]=useState('');const [errMsg,setErrMsg]=useState('');
-  if(!address) return h('div',{className:'panel'},h('div',{className:'wallet-prompt'},h('div',{className:'wallet-icon'},'🏦'),h('h3',null,'Conectá tu wallet'),h('p',null,'Conectá tu wallet SUI para solicitar el retiro de tus pesos.')));
+  const [status, setStatus] = useState('idle');
+  const [txDigest, setTxDigest] = useState('');
+  const [errMsg, setErrMsg] = useState('');
+
+  if (!address) return h('div', { className: 'panel' }, h('div', { className: 'wallet-prompt' }, h('div', { className: 'wallet-icon' }, '🏦'), h('h3', null, tr(lang, 'withdraw_no_wallet_title')), h('p', null, tr(lang, 'withdraw_no_wallet_desc'))));
   const preview=parseFloat(amount)||0;
   const previewUSD=oraclePrice>0?(preview/oraclePrice).toFixed(2):'—';
   const submit=async()=>{
@@ -615,37 +957,39 @@ function WithdrawTab({address,balance,wallet,oraclePrice}) {
   };
   if(status==='done') return h('div',{className:'panel'},h('div',{className:'wallet-prompt'},
     h('div',{className:'wallet-icon'},'✅'),
-    h('h3',null,txDigest==='manual'?'Solicitud registrada':'Retiro enviado'),
-    h('p',null,txDigest==='manual'?`Tu retiro de ${fmt(preview)} ARS al CBU ${cbu} fue registrado. Lo procesamos en 24hs hábiles.`:`Quema de ${fmt(preview)} ARSt ejecutada. Recibirás ${fmt(preview)} ARS en tu CBU.`),
-    txDigest&&txDigest!=='manual'&&h('a',{className:'tx-link',href:`${EXPLORER}/txblock/${txDigest}`,target:'_blank',style:{display:'block',marginTop:'12px'}},'Ver transacción en explorer →'),
-    h('button', { className: 'btn btn-outline', style: { marginTop: '20px' }, onClick: () => { setStatus('idle'); setAmount(''); setCbu(''); } }, 'Nueva solicitud')
+    h('h3', null, txDigest === 'manual' ? tr(lang, 'withdraw_success_manual_title') : tr(lang, 'withdraw_success_title')),
+    h('p', null, txDigest === 'manual'
+      ? tr(lang, 'withdraw_success_manual_desc', { amount: fmt(preview), cbu })
+      : tr(lang, 'withdraw_success_desc', { amount: fmt(preview) })),
+    txDigest&&txDigest!=='manual'&&h('a',{className:'tx-link',href:`${EXPLORER}/txblock/${txDigest}`,target:'_blank',style:{display:'block',marginTop:'12px'}},tr(lang,'withdraw_explorer')),
+    h('button', { className: 'btn btn-outline', style: { marginTop: '20px' }, onClick: () => { setStatus('idle'); setAmount(''); setCbu(''); } }, tr(lang,'withdraw_new'))
   ));
   const btnLabel={idle:'Solicitar retiro',signing:'Esperando firma...',sending:'Enviando...',error:'Reintentar'}[status]||'Solicitar retiro';
   return h('div',{className:'panel'},
     h('div',{className:'gap3'},
       h('div',{className:'balance-display'},
-        h('div',null,h('div',{className:'bl'},'Saldo disponible'),h('div',{className:'bv'},fmt(balance,2)+' ARSt'),h('div',{className:'balance-usd'},'≈ $'+fmt(balance)+' ARS'+(oraclePrice>0?' · ≈ USD '+fmtUSD(balance/oraclePrice):''))),
-        h('button',{className:'btn btn-outline',style:{fontSize:'11px',padding:'6px 14px'},onClick:()=>setAmount(String(balance))},'Máximo')
+        h('div',null,h('div',{className:'bl'},tr(lang,'withdraw_balance_label')),h('div',{className:'bv'},fmt(balance,2)+' ARSt'),h('div',{className:'balance-usd'},'≈ $'+fmt(balance)+' ARS'+(oraclePrice>0?' · ≈ USD '+fmtUSD(balance/oraclePrice):''))),
+        h('button',{className:'btn btn-outline',style:{fontSize:'11px',padding:'6px 14px'},onClick:()=>setAmount(String(balance))},tr(lang,'withdraw_max'))
       ),
       h('div',null,
-        h('div',{className:'field-label'},'¿Cuántos ARSt querés retirar?'),
+        h('div',{className:'field-label'},tr(lang,'withdraw_amount_label')),
         h('input',{className:'field-input',type:'number',placeholder:'500',min:1,value:amount,onChange:e=>setAmount(e.target.value)})
       ),
       h('div',null,
-        h('div',{className:'field-label'},'CBU / CVU de destino'),
+        h('div',{className:'field-label'}, tr(lang, 'withdraw_cbu_label')),
         h('input',{className:'field-input',type:'text',placeholder:'0000000000000000000000',maxLength:22,value:cbu,onChange:e=>setCbu(e.target.value.replace(/\D/g,''))}),
-        h('div',{className:'field-hint'},'22 dígitos · CBU o CVU de tu banco o Mercado Pago')
+        h('div',{className:'field-hint'}, tr(lang, 'withdraw_cbu_hint'))
       ),
-      h('div',{className:'amount-preview'},h('span',{className:'lbl'},'Vas a recibir'),h('span',{className:'val'},preview>0?'$'+fmt(preview)+' ARS'+(oraclePrice>0?' (≈ USD '+fmtUSD(preview/oraclePrice)+')':''):'— ARS')),
+      h('div',{className:'amount-preview'},h('span',{className:'lbl'},tr(lang,'withdraw_preview')),h('span',{className:'val'},preview>0?'$'+fmt(preview)+' ARS'+(oraclePrice>0?' (≈ USD '+fmtUSD(preview/oraclePrice)+')':''):'— ARS')),
       errMsg&&h('div',{className:'alert alert-error'},'❌ '+errMsg),
-      h('div',{className:'alert alert-warn'},'⚠️ Los retiros se procesan manualmente dentro de las 24 horas hábiles. Verificá que el CBU sea correcto antes de confirmar.'),
+      h('div',{className:'alert alert-warn'}, tr(lang, 'withdraw_warn')),
       h('button',{className:'btn btn-primary',style:{width:'100%',padding:'14px'},onClick:submit,disabled:status==='signing'||status==='sending'},btnLabel)
     )
   );
 }
 
 // ── HistoryTab ────────────────────────────────────────────────────────────────
-function HistoryTab({address,oraclePrice}) {
+function HistoryTab({address,oraclePrice,lang}) {
   const [events,setEvents]=useState([]);const [loading,setLoading]=useState(false);
   useEffect(()=>{
     if(!address)return;setLoading(true);
@@ -653,24 +997,31 @@ function HistoryTab({address,oraclePrice}) {
       .then(d=>setEvents((d?.data||[]).filter(e=>e.parsedJson?.recipient===address)))
       .catch(console.error).finally(()=>setLoading(false));
   },[address]);
-  if(!address) return h('div',{className:'panel'},h('div',{className:'wallet-prompt'},h('div',{className:'wallet-icon'},'📋'),h('h3',null,'Conectá tu wallet'),h('p',null,'Conectá tu wallet para ver tu historial de transacciones.')));
-  if(loading) return h('div',{className:'panel'},h('div',{style:{textAlign:'center',padding:'48px',color:'var(--muted)',fontFamily:"'IBM Plex Mono',monospace",fontSize:'12px'}},'Cargando historial...'));
+  if(!address) return h('div',{className:'panel'},h('div',{className:'wallet-prompt'},h('div',{className:'wallet-icon'},'📋'),h('h3',null,tr(lang,'history_no_wallet_title')),h('p',null,tr(lang,'history_no_wallet_desc'))));
+  if(loading) return h('div',{className:'panel'},h('div',{style:{textAlign:'center',padding:'48px',color:'var(--muted)',fontFamily:"'IBM Plex Mono',monospace",fontSize:'12px'}},tr(lang,'history_loading')));
   return h('div',{className:'panel',style:{padding:0,overflow:'hidden'}},
     h('table',{className:'history-table'},
-      h('thead',null,h('tr',null,h('th',null,'Fecha'),h('th',null,'Tipo'),h('th',null,'ARSt'),h('th',null,'Valor ARS'),h('th',null,'Estado'),h('th',null,'TX'))),
+      h('thead',null,h('tr',null,
+  h('th',null,tr(lang,'history_th_date')),
+  h('th',null,tr(lang,'history_th_type')),
+  h('th',null,tr(lang,'history_th_arst')),
+  h('th',null,tr(lang,'history_th_ars')),
+  h('th',null,tr(lang,'history_th_status')),
+  h('th',null,tr(lang,'history_th_tx'))
+)),
       h('tbody',null,
         events.length===0
-          ? h('tr',null,h('td',{colSpan:6,style:{textAlign:'center',color:'var(--muted)',padding:'48px'}},'Sin transacciones todavía. Hacé tu primer depósito.'))
+          ? h('tr',null,h('td',{colSpan:6,style:{textAlign:'center',color:'var(--muted)',padding:'48px'}},tr(lang,'history_empty')))
           : events.map((e,i)=>{
               const amount=parseInt(e.parsedJson?.amount??0)/100;
               const ts=new Date(parseInt(e.timestampMs)).toLocaleString('es-AR');
               const d=e.id?.txDigest??'';
               return h('tr',{key:i},
                 h('td',null,ts),
-                h('td',null,h('span',{className:'badge badge-mint'},'DEPÓSITO')),
+                h('td',null,h('span',{className:'badge badge-mint'}, tr(lang, 'history_type_deposit'))),
                 h('td',null,fmt(amount,2)),
                 h('td',null,'$'+fmt(amount)),
-                h('td',null,h('span',{className:'dot dot-green'}),'Completado'),
+                h('td',null,h('span',{className:'dot dot-green'}), tr(lang, 'history_status_done')),
                 h('td',null,h('a',{className:'tx-link',href:`${EXPLORER}/txblock/${d}`,target:'_blank'},d.slice(0,10)+'...'))
               );
             })
@@ -689,6 +1040,10 @@ function App() {
   const [balance,setBalance]=useState(0);
   const [metrics,setMetrics]=useState({supply:0,reserve:0,collateral:0,paused:false,totalTx:0,auditAgo:'—'});
   const [oracle,setOracle]=useState({price:0,change:0,ts:0});
+  const [lang, setLang] = useState(() => {
+    const browserLang = navigator.language?.slice(0, 2).toLowerCase();
+    return browserLang === 'en' ? 'en' : 'es';
+  });
 
   // Cargar métricas
   useEffect(()=>{
@@ -733,134 +1088,119 @@ function App() {
   const disconnect=()=>{setWallet(null);setBalance(0);};
 
   const tsAgo=oracle.ts>0?Math.floor((Date.now()-oracle.ts)/60000):null;
-  const tsLabel=tsAgo===null?'—':tsAgo<1?'ahora':tsAgo<60?`hace ${tsAgo} min`:`hace ${Math.floor(tsAgo/60)}h`;
+  const tsLabel = tsAgo === null ? '—' :
+    tsAgo < 1 ? tr(lang, 'hero_now') :
+      tsAgo < 60 ? tr(lang, 'hero_min_ago', { n: tsAgo }) :
+        tr(lang, 'hero_hour_ago', { n: Math.floor(tsAgo / 60) });
+        console.log('render App', { tab, address, metrics, oracle });
+  return h('div', null,
+    showModal && h(WalletModal, { onConnect: connect, onClose: () => setShowModal(false), lang }),
 
-  return h('div',null,
-    showModal&&h(WalletModal,{onConnect:connect,onClose:()=>setShowModal(false)}),
-
-    // Navbar
-    h('nav',null,
-      h('a',{className:'nav-logo',href:'#'},h('div',{className:'logo-mark'},'₳'),'ARS',h('span',{className:'logo-sub'},'t')),
-      h('div',{style:{display:'flex',alignItems:'center',gap:'32px'}},
-        h('div',{className:'nav-links'},
-          h('a',{href:'#about',onClick:e=>{e.preventDefault();document.getElementById('about-section')?.scrollIntoView({behavior:'smooth'})}},'¿Qué es ARSt?'),
-          h('a',{href:'#metrics',onClick:e=>{e.preventDefault();document.getElementById('metrics-section')?.scrollIntoView({behavior:'smooth'})}},'Transparencia'),
-          h('a',{href:'#account',onClick:e=>{e.preventDefault();document.getElementById('account-section')?.scrollIntoView({behavior:'smooth'})}},'Mi cuenta')
+    h('nav', null,
+      h('a', { className: 'nav-logo', href: '#' }, h('div', { className: 'logo-mark' }, '₳'), 'ARS', h('span', { className: 'logo-sub' }, 't')),
+      h('div', { style: { display: 'flex', alignItems: 'center', gap: '32px' } },
+        h('div', { className: 'nav-links' },
+          h('a', { href: '#about', onClick: e => { e.preventDefault(); document.getElementById('about-section')?.scrollIntoView({ behavior: 'smooth' }) } }, tr(lang, 'nav_what')),
+          h('a', { href: '#metrics', onClick: e => { e.preventDefault(); document.getElementById('metrics-section')?.scrollIntoView({ behavior: 'smooth' }) } }, tr(lang, 'nav_transparency')),
+          h('a', { href: '#account', onClick: e => { e.preventDefault(); document.getElementById('account-section')?.scrollIntoView({ behavior: 'smooth' }) } }, tr(lang, 'nav_account'))
         ),
-        h('div',{className:'nav-right'},
-          h('span',{className:'network-pill'},'testnet'),
+        h('div', { className: 'nav-right' },
+          h('button', { className: 'btn btn-outline', style: { padding: '6px 12px', fontSize: '11px' }, onClick: () => setLang(l => l === 'es' ? 'en' : 'es') }, lang === 'es' ? 'EN' : 'ES'),
+          h('span', { className: 'network-pill' }, 'testnet'),
           address
-            ? h('div',{style:{position:'relative'}},
-  h('div',{className:'connected-badge',onClick:()=>setShowDisconnect(d=>!d)},
-    h('span',{className:'dot dot-green'}),
-    shortAddr(address),
-    h('span',{style:{marginLeft:'4px',fontSize:'10px',color:'var(--muted2)'}},'▾')
-  ),
-  showDisconnect && h('div',{
-    style:{position:'absolute',right:0,top:'calc(100% + 6px)',background:'var(--surface)',border:'1px solid var(--border)',borderRadius:'8px',padding:'4px',minWidth:'140px',zIndex:50}
-  },
-    h('button',{
-      style:{width:'100%',padding:'8px 12px',background:'transparent',border:'none',color:'var(--red)',fontFamily:"'IBM Plex Mono',monospace",fontSize:'11px',cursor:'pointer',textAlign:'left',borderRadius:'6px'},
-      onClick:()=>{disconnect();setShowDisconnect(false);}
-    },'Desconectar wallet')
-  )
-)
-            : h('button',{className:'btn btn-primary',onClick:()=>setShowModal(true)},'Conectar wallet')
+            ? h('div', { style: { position: 'relative' } },
+              h('div', { className: 'connected-badge', onClick: () => setShowDisconnect(d => !d) },
+                h('span', { className: 'dot dot-green' }),
+                shortAddr(address),
+                h('span', { style: { marginLeft: '4px', fontSize: '10px', color: 'var(--muted2)' } }, '▾')
+              ),
+              showDisconnect && h('div', { style: { position: 'absolute', right: 0, top: 'calc(100% + 6px)', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '8px', padding: '4px', minWidth: '140px', zIndex: 50 } },
+                h('button', { style: { width: '100%', padding: '8px 12px', background: 'transparent', border: 'none', color: 'var(--red)', fontFamily: "'IBM Plex Mono',monospace", fontSize: '11px', cursor: 'pointer', textAlign: 'left', borderRadius: '6px' }, onClick: () => { disconnect(); setShowDisconnect(false); } }, tr(lang, 'nav_disconnect'))
+              )
+            )
+            : h('button', { className: 'btn btn-primary', onClick: () => setShowModal(true) }, tr(lang, 'nav_connect'))
         )
       )
     ),
 
-    // Hero
-    h('div',{className:'hero'},
-      h('div',{className:'hero-eyebrow'},'Peso argentino · Blockchain SUI · Respaldo 1 a 1'),
-      h('h1',{className:'hero-title'},'Tu ',h('span',{className:'accent-gold'},'peso'),' en la ',h('br'),h('span',{className:'accent-blue'},'blockchain')),
-      h('p',{className:'hero-sub'},'ARSt es una moneda digital respaldada 1 a 1 por pesos argentinos en cuenta bancaria. Depositá, retirá y usá tus pesos sin intermediarios.'),
-
-      // Ticker
-      h('div',{className:'ticker'},
-        h('span',{className:'ticker-label'},'Precio USD oficial'),
-        h('span',{className:'ticker-value'},oracle.price>0?'$'+fmt(oracle.price):'—'),
-        h('span',{className:'ticker-unit'},'ARS'),
-        oracle.price>0&&h('span',{className:'ticker-change '+(oracle.change>=0?'up':'dn')},(oracle.change>=0?'+':'')+oracle.change.toFixed(2)+'%'),
-        h('span',{className:'ticker-ts'},'· actualizado '+tsLabel)
+    h('div', { className: 'hero' },
+      h('div', { className: 'hero-eyebrow' }, tr(lang, 'hero_eyebrow')),
+      h('h1', { className: 'hero-title' }, tr(lang, 'hero_title_1'), h('span', { className: 'accent-gold' }, tr(lang, 'hero_title_2')), tr(lang, 'hero_title_3'), h('br'), h('span', { className: 'accent-blue' }, tr(lang, 'hero_title_4'))),
+      h('p', { className: 'hero-sub' }, tr(lang, 'hero_sub')),
+      h('div', { className: 'ticker' },
+        h('span', { className: 'ticker-label' }, tr(lang, 'hero_oracle_label')),
+        h('span', { className: 'ticker-value' }, oracle.price > 0 ? '$' + fmt(oracle.price) : '—'),
+        h('span', { className: 'ticker-unit' }, tr(lang, 'hero_oracle_unit')),
+        oracle.price > 0 && h('span', { className: 'ticker-change ' + (oracle.change >= 0 ? 'up' : 'dn') }, (oracle.change >= 0 ? '+' : '') + oracle.change.toFixed(2) + '%'),
+        h('span', { className: 'ticker-ts' }, '· ' + tr(lang, 'hero_updated') + ' ' + tsLabel)
       ),
-
-      // Métricas
-      h('div',{id:'metrics-section',className:'metrics'},
-        h('div',{className:'metric m-blue'},
-          h('div',{className:'metric-label'},'ARSt en circulación'),
-          h('div',{className:'metric-value'},metrics.supply>0?fmt(metrics.supply):'—'),
-          h('div',{className:'metric-sub'},'tokens emitidos')
+      h('div', { id: 'metrics-section', className: 'metrics' },
+        h('div', { className: 'metric m-blue' },
+          h('div', { className: 'metric-label' }, tr(lang, 'm_supply')),
+          h('div', { className: 'metric-value' }, metrics.supply > 0 ? fmt(metrics.supply) : '—'),
+          h('div', { className: 'metric-sub' }, tr(lang, 'm_supply_sub'))
         ),
-        h('div',{className:'metric m-gold'},
-          h('div',{className:'metric-label'},'Reserva bancaria'),
-          h('div',{className:'metric-value'},metrics.reserve>0?'$'+fmt(metrics.reserve):'—'),
-          h('div',{className:'metric-sub'},'ARS en cuenta regulada')
+        h('div', { className: 'metric m-gold' },
+          h('div', { className: 'metric-label' }, tr(lang, 'm_reserve')),
+          h('div', { className: 'metric-value' }, metrics.reserve > 0 ? '$' + fmt(metrics.reserve) : '—'),
+          h('div', { className: 'metric-sub' }, tr(lang, 'm_reserve_sub'))
         ),
-        h('div',{className:'metric m-green'},
-          h('div',{className:'metric-label'},'Colateralización'),
-          h('div',{className:'metric-value'},metrics.collateral>0?metrics.collateral.toFixed(1)+'%':'—%'),
-          h('div',{className:'cbar'},h('div',{className:'cbar-fill',style:{width:Math.min(200,metrics.collateral)/2+'%'}})),
-          h('div',{className:'metric-sub'},'respaldo sobre emisión')
+        h('div', { className: 'metric m-green' },
+          h('div', { className: 'metric-label' }, tr(lang, 'm_collateral')),
+          h('div', { className: 'metric-value' }, metrics.collateral > 0 ? metrics.collateral.toFixed(1) + '%' : '—%'),
+          h('div', { className: 'cbar' }, h('div', { className: 'cbar-fill', style: { width: Math.min(200, metrics.collateral) / 2 + '%' } })),
+          h('div', { className: 'metric-sub' }, tr(lang, 'm_collateral_sub'))
         ),
-        h('div',{className:metrics.paused?'metric m-red':'metric m-muted'},
-          h('div',{className:'metric-label'},'Estado del protocolo'),
-          h('div',{className:'metric-value',style:{fontSize:'16px'}},metrics.paused?'PAUSADO':'ACTIVO'),
+        h('div', { className: metrics.paused ? 'metric m-red' : 'metric m-muted' },
+          h('div', { className: 'metric-label' }, tr(lang, 'm_status')),
+          h('div', { className: 'metric-value', style: { fontSize: '16px' } }, metrics.paused ? tr(lang, 'm_paused') : tr(lang, 'm_active')),
           metrics.paused
-            ? h('div',{className:'metric-status-pause'},'⚠ Operaciones suspendidas')
-            : h('div',{className:'metric-status-ok'},'✓ Depósitos y retiros operativos')
+            ? h('div', { className: 'metric-status-pause' }, tr(lang, 'm_status_paused'))
+            : h('div', { className: 'metric-status-ok' }, tr(lang, 'm_status_ok'))
         )
       )
     ),
 
-    // About
-    h('div',{id:'about-section'},h(AboutSection)),
+    h('div', { id: 'about-section' }, h(AboutSection, { lang })),
 
-    // Mi cuenta
-    h('div',{id:'account-section',className:'section'},
-      h('div',{className:'section-title'},'Mi cuenta'),
-
-      // Balance del usuario si está conectado
-      address&&h('div',{className:'user-balance-grid'},
-        h('div',{className:'user-stat'},
-          h('div',{className:'user-stat-label'},'Saldo ARSt'),
-          h('div',{className:'user-stat-value'},fmt(balance,2)),
-          h('div',{className:'user-stat-sub'},'tokens en tu wallet')
+    h('div', { id: 'account-section', className: 'section' },
+      h('div', { className: 'section-title' }, tr(lang, 'account_title')),
+      address && h('div', { className: 'user-balance-grid' },
+        h('div', { className: 'user-stat' },
+          h('div', { className: 'user-stat-label' }, tr(lang, 'stat_balance')),
+          h('div', { className: 'user-stat-value' }, fmt(balance, 2)),
+          h('div', { className: 'user-stat-sub' }, tr(lang, 'stat_balance_sub'))
         ),
-        h('div',{className:'user-stat'},
-          h('div',{className:'user-stat-label'},'Valor en pesos'),
-          h('div',{className:'user-stat-value'},'$'+fmt(balance)),
-          h('div',{className:'user-stat-sub'},'1 ARSt = 1 ARS')
+        h('div', { className: 'user-stat' },
+          h('div', { className: 'user-stat-label' }, tr(lang, 'stat_ars')),
+          h('div', { className: 'user-stat-value' }, '$' + fmt(balance)),
+          h('div', { className: 'user-stat-sub' }, tr(lang, 'stat_ars_sub'))
         ),
-        h('div',{className:'user-stat'},
-          h('div',{className:'user-stat-label'},'Valor en dólares'),
-          h('div',{className:'user-stat-value'},oracle.price>0?'U$D '+fmtUSD(balance/oracle.price):'—'),
-          h('div',{className:'user-stat-sub'},oracle.price>0?'al tipo oficial':'cargando precio...')
+        h('div', { className: 'user-stat' },
+          h('div', { className: 'user-stat-label' }, tr(lang, 'stat_usd')),
+          h('div', { className: 'user-stat-value' }, oracle.price > 0 ? 'U$D ' + fmtUSD(balance / oracle.price) : '—'),
+          h('div', { className: 'user-stat-sub' }, oracle.price > 0 ? tr(lang, 'stat_usd_sub') : tr(lang, 'stat_usd_loading'))
         )
       ),
-
-      // Tabs
-      h('div',{className:'tabs'},
-        ['deposit','send','withdraw','history'].map((t,i)=>h('button',{key:t,className:'tab'+(tab===t?' active':''),onClick:()=>setTab(t)},['Depositar','Enviar','Retirar','Historial'][i]))
+      h('div', { className: 'tabs' },
+        ['deposit', 'send', 'withdraw', 'history'].map((tabId, i) => h('button', { key: tabId, className: 'tab' + (tab === tabId ? ' active' : ''), onClick: () => setTab(tabId) }, [tr(lang, 'tab_deposit'), tr(lang, 'tab_send'), tr(lang, 'tab_withdraw'), tr(lang, 'tab_history')][i]))
       ),
-
-      tab === 'deposit' && h(DepositTab, { address }),
-      tab === 'send' && h(SendTab, { address, balance, wallet }),
-      tab === 'withdraw' && h(WithdrawTab, { address, balance, wallet, oraclePrice: oracle.price }),
-      tab === 'history' && h(HistoryTab, { address, oraclePrice: oracle.price })
+      tab === 'deposit' && h(DepositTab, { address, lang }),
+      tab === 'send' && h(SendTab, { address, balance, wallet, lang }),
+      tab === 'withdraw' && h(WithdrawTab, { address, balance, wallet, oraclePrice: oracle.price, lang }),
+      tab === 'history' && h(HistoryTab, { address, oraclePrice: oracle.price, lang })
     ),
 
-    // Footer
-    h('footer',null,
-      h('div',{className:'footer-left'},
-        h('span',{className:'dot dot-green dot-pulse'}),
-        'ARSt Protocol · testnet · ',
-        h('a',{href:`${EXPLORER}/package/${PACKAGE_ID}`,target:'_blank',style:{color:'var(--blue)',fontFamily:"'IBM Plex Mono',monospace",fontSize:'10px'}},'0x1937...375c')
+    h('footer', null,
+      h('div', { className: 'footer-left' },
+        h('span', { className: 'dot dot-green dot-pulse' }),
+        tr(lang, 'footer_protocol'),
+        h('a', { href: `${EXPLORER}/package/${PACKAGE_ID}`, target: '_blank', style: { color: 'var(--blue)', fontFamily: "'IBM Plex Mono',monospace", fontSize: '10px' } }, '0x1937...375c')
       ),
-      h('div',{className:'footer-links'},
-        h('a',{href:EXPLORER,target:'_blank'},'Explorer'),
-        h('a',{href:'https://github.com/ArikaToshimoto/ARSt-Backend',target:'_blank'},'GitHub'),
-        h('a',{href:'#about-section',onClick:e=>{e.preventDefault();document.getElementById('about-section')?.scrollIntoView({behavior:'smooth'})}},'Documentación')
+      h('div', { className: 'footer-links' },
+        h('a', { href: EXPLORER, target: '_blank' }, tr(lang, 'footer_explorer')),
+        h('a', { href: 'https://github.com/ArikaToshimoto/ARSt-Backend', target: '_blank' }, 'GitHub'),
+        h('a', { href: '#about-section', onClick: e => { e.preventDefault(); document.getElementById('about-section')?.scrollIntoView({ behavior: 'smooth' }) } }, tr(lang, 'footer_docs'))
       )
     )
   );
