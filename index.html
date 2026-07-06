@@ -746,8 +746,16 @@ function WalletModal({onConnect,onClose, lang}) {
         if (!coins.length) throw new Error(tr(lang, 'send_err_no_coins'));
 
         const sorted = coins.sort((a, b) => Number(BigInt(b.balance) - BigInt(a.balance)));
-        const coin = sorted.find(c => parseInt(c.balance) >= amountUnits);
-        if (!coin) throw new Error(tr(lang, 'send_err_single_coin'));
+        // Intentar encontrar un coin con suficiente balance
+        let coin = sorted.find(c => parseInt(c.balance) >= amountUnits);
+
+        // Si no hay uno solo suficiente, mergear coins en la tx
+        if (!coin) {
+          const totalBalance = coins.reduce((sum, c) => sum + parseInt(c.balance), 0);
+          if (totalBalance < amountUnits) throw new Error(tr(lang, 'send_err_insufficient'));
+          // Usar el coin más grande como base y mergear los demás
+          coin = sorted[0];
+        }
 
         setStatus('signing');
 
@@ -762,7 +770,13 @@ function WalletModal({onConnect,onClose, lang}) {
           tx.setSender(address);
           tx.setGasBudget(10_000_000);
 
-          if (parseInt(coin.balance) > amountUnits) {
+          // Mergear coins si el principal no alcanza
+          if (parseInt(coin.balance) < amountUnits && sorted.length > 1) {
+            const otherCoins = sorted.slice(1).map(c => tx.object(c.coinObjectId));
+            tx.mergeCoins(tx.object(coin.coinObjectId), otherCoins);
+          }
+
+          if (parseInt(coin.balance) < amountUnits || sorted.length > 1) {
             const [split] = tx.splitCoins(tx.object(coin.coinObjectId), [tx.pure.u64(amountUnits)]);
             tx.transferObjects([split], tx.pure.address(to));
           } else {
@@ -780,7 +794,13 @@ function WalletModal({onConnect,onClose, lang}) {
           tx.setSender(address);
           tx.setGasBudget(10_000_000);
 
-          if (parseInt(coin.balance) > amountUnits) {
+          // Mergear coins si el principal no alcanza
+          if (parseInt(coin.balance) < amountUnits && sorted.length > 1) {
+            const otherCoins = sorted.slice(1).map(c => tx.object(c.coinObjectId));
+            tx.mergeCoins(tx.object(coin.coinObjectId), otherCoins);
+          }
+
+          if (parseInt(coin.balance) < amountUnits || sorted.length > 1) {
             const [split] = tx.splitCoins(tx.object(coin.coinObjectId), [tx.pure.u64(amountUnits)]);
             tx.transferObjects([split], tx.pure.address(to));
           } else {
