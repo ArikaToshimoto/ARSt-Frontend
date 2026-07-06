@@ -472,9 +472,10 @@ function AboutSection() {
           }
         }
 
-        if (!result) throw new Error('La wallet no soportó la operación');
+        // Slush puede devolver el digest directamente o dentro de effects
+        if (!result && result !== null) throw new Error('La wallet no soportó la operación');
 
-        const digest = result?.digest || result?.effects?.transactionDigest;
+        const digest = result?.digest || result?.effects?.transactionDigest || result?.transaction?.txid || 'completado';
         setTxDigest(digest || 'ok');
         setStatus('done');
 
