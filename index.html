@@ -445,28 +445,31 @@ function AboutSection() {
             options: { showEffects: true }
           });
          } else if (type === 'standard') {
-        const { Transaction } = await import('https://esm.sh/@mysten/sui@1.21.1/transactions');
-        const tx = new Transaction();
-        tx.setSender(address);
-        tx.setGasBudget(10_000_000);
+          const { Transaction } = await import('https://esm.sh/@mysten/sui@1.21.1/transactions');
+          const tx = new Transaction();
+          tx.setSender(address);
+          tx.setGasBudget(10_000_000);
 
-        if (parseInt(coin.balance) > amountUnits) {
-          const [split] = tx.splitCoins(tx.object(coin.coinObjectId), [tx.pure.u64(amountUnits)]);
-          tx.transferObjects([split], tx.pure.address(to));
-        } else {
-          tx.transferObjects([tx.object(coin.coinObjectId)], tx.pure.address(to));
-        }
+          if (parseInt(coin.balance) > amountUnits) {
+            const [split] = tx.splitCoins(tx.object(coin.coinObjectId), [tx.pure.u64(amountUnits)]);
+            tx.transferObjects([split], tx.pure.address(to));
+          } else {
+            tx.transferObjects([tx.object(coin.coinObjectId)], tx.pure.address(to));
+          }
 
-        const feat = ref.features?.['sui:signAndExecuteTransaction'] ||
-          ref['#e']?.['sui:signAndExecuteTransaction'];
-        if (feat) {
-          result = await feat.signAndExecuteTransaction?.({
-            transaction: tx,
-            chain: 'sui:testnet',
-            options: { showEffects: true }
-          });
+          const feat = ref.features?.['sui:signAndExecuteTransaction'] ||
+            ref['#e']?.['sui:signAndExecuteTransaction'];
+          if (feat) {
+            // Pasar el account explícitamente para Slush
+            const account = ref.accounts?.[0];
+            result = await feat.signAndExecuteTransaction?.({
+              transaction: tx,
+              account,           // ← agregar esto
+              chain: 'sui:testnet',
+              options: { showEffects: true }
+            });
+          }
         }
-      }
 
         if (!result) throw new Error('La wallet no soportó la operación');
 
