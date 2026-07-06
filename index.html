@@ -279,12 +279,12 @@ function shortAddr(a){return a.slice(0,6)+'...'+a.slice(-4)}
           // Slush guarda address como getter en el prototype
           const acc = r?.accounts?.[0];
           const addr = acc?.address || r?.accounts?.[0]?.address;
-          if (addr) { onSuccess({ address: addr, ref, type: 'standard', name }); return; }
+          if (addr) { onSuccess({ address: addr, ref, type: 'standard', name, account: acc }); return; }
 
           // Fallback: buscar en wallet.accounts
           const walletAcc = ref.accounts?.[0];
           const walletAddr = walletAcc?.address;
-          if (walletAddr) { onSuccess({ address: walletAddr, ref, type: 'standard', name }); return; }
+          if (walletAddr) { onSuccess({ address: walletAddr, ref, type: 'standard', name, account: walletAcc }); return; }
         }
         if (ref.connect) {
           const r = await ref.connect({
