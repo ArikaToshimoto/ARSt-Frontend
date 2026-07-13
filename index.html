@@ -181,7 +181,7 @@ import { createRoot } from 'https://esm.sh/react-dom@18/client';
 
 // ── Constantes ────────────────────────────────────────────────────────────────
 const SUI_RPC    = 'https://fullnode.testnet.sui.io:443';
-const PACKAGE_ID = '0x193773c18f0e409e744f27bbf9290cb837da5eed94c598e2c6ced1017fdf375c';
+const PACKAGE_ID = '0x1da2d3081680f3e138ce4032b54e211de135216e919772c0224c35067a09912e';
 const RESERVE_ID = '0x3edc8036b004862e9678724d40069a4b6c442fe19ff2983cd6ce4592794ee152';
 const PRICEFEED  = '0xddec62244186d0572464b12c87a905005897cb8472de866c174f2334aae47a87';
 const ARST_TYPE  = '0xe575e261548ffaeb811eb8115aca5e2fa4e0e780911f495701e9cb0600dcfd62::arst::ARST';
@@ -1215,7 +1215,7 @@ function App() {
       h('div', { className: 'footer-left' },
         h('span', { className: 'dot dot-green dot-pulse' }),
         tr(lang, 'footer_protocol'),
-        h('a', { href: `${EXPLORER}/package/${PACKAGE_ID}`, target: '_blank', style: { color: 'var(--blue)', fontFamily: "'IBM Plex Mono',monospace", fontSize: '10px' } }, '0x1937...375c')
+        h('a', { href: `${EXPLORER}/package/${PACKAGE_ID}`, target: '_blank', style: { color: 'var(--blue)', fontFamily: "'IBM Plex Mono',monospace", fontSize: '10px' } }, '0x1da2...9912e')
       ),
       h('div', { className: 'footer-links' },
         h('a', { href: EXPLORER, target: '_blank' }, tr(lang, 'footer_explorer')),
