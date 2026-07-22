@@ -1230,8 +1230,13 @@ function StakingTab({ address, balance, wallet, lang }) {
 
   async function signAndExec(tx) {
     const ref = wallet.ref; const type = wallet.type;
-    if (type === 'nightly' || type === 'standard') {
+    if (type === 'nightly') {
       return await ref.signAndExecuteTransaction({ transaction: tx, chain: 'sui:testnet', options: { showEffects: true } });
+    }
+    if (type === 'standard') {
+      const feat = ref?.features?.['sui:signAndExecuteTransaction'];
+      if (!feat) throw new Error(tr(lang, 'send_err_no_wallet'));
+      return await feat.signAndExecuteTransaction({ transaction: tx, chain: 'sui:testnet', options: { showEffects: true } });
     }
     throw new Error(tr(lang, 'send_err_no_wallet'));
   }
