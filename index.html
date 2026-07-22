@@ -523,9 +523,92 @@ const BACKEND    = 'https://arst-backend-production.up.railway.app';
     return str;
   }
 
+const SUI_GRAPHQL = 'https://graphql.testnet.sui.io/graphql';
+
+async function graphqlQuery(query, variables) {
+  const r = await fetch(SUI_GRAPHQL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query, variables }),
+  });
+  const body = await r.json();
+  if (body.errors) throw new Error('GraphQL error: ' + JSON.stringify(body.errors));
+  return body.data;
+}
+
+// El JSON-RPC publico de testnet fue dado de baja por Mysten (semana del 6 de
+// julio de 2026). Esta funcion mantiene la MISMA firma y forma de respuesta
+// que el rpc() viejo (JSON-RPC), pero internamente usa GraphQL — asi el
+// resto del codigo no necesita cambios.
 async function rpc(method, params) {
-  const r = await fetch(SUI_RPC,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method,params})});
-  return (await r.json()).result;
+  if (method === 'suix_getBalance') {
+    const [address, coinType] = params;
+    const data = await graphqlQuery(
+      `query($addr: SuiAddress!, $type: String!) { address(address: $addr) { balance(coinType: $type) { totalBalance } } }`,
+      { addr: address, type: coinType }
+    );
+    return { totalBalance: data?.address?.balance?.totalBalance ?? '0' };
+  }
+
+  if (method === 'suix_getCoins') {
+    const [address, coinType, , limit] = params;
+    const fullCoinType = `0x2::coin::Coin<${coinType}>`;
+    const data = await graphqlQuery(
+      `query($addr: SuiAddress!, $type: String!, $first: Int) { address(address: $addr) { objects(filter: { type: $type }, first: $first) { nodes { address contents { json } } } } }`,
+      { addr: address, type: fullCoinType, first: limit ?? 10 }
+    );
+    const nodes = data?.address?.objects?.nodes ?? [];
+    return {
+      data: nodes.map(n => ({
+        coinObjectId: n.address,
+        balance: n.contents?.json?.balance ?? '0',
+        coinType,
+      })),
+    };
+  }
+
+  if (method === 'sui_getObject') {
+    const [objectId] = params;
+    const data = await graphqlQuery(
+      `query($id: SuiAddress!) { object(address: $id) { asMoveObject { contents { json } } } }`,
+      { id: objectId }
+    );
+    const fields = data?.object?.asMoveObject?.contents?.json;
+    if (!fields) return { data: null };
+    return { data: { content: { fields } } };
+  }
+
+  if (method === 'suix_queryEvents') {
+    // NOTA: filtrar eventos por tipo (events(filter:{type})) esta roto en
+    // el GraphQL de testnet ahora mismo (bug Mysten/sui#24094). Workaround:
+    // filtramos transacciones que llamaron a la funcion que emite el evento.
+    const [filter, , limit] = params;
+    const eventType = filter?.MoveEventType ?? '';
+    const [pkg, , evName] = eventType.split('::');
+    // Mapeo evento -> funcion que lo emite (los unicos que usa este frontend)
+    const functionByEvent = {
+      MintEvent: 'mint_with_authority',
+    };
+    const fn = functionByEvent[evName];
+    if (!fn) return { data: [] };
+
+    const data = await graphqlQuery(
+      `query($fn: String!, $last: Int) { transactions(filter: { function: $fn }, last: $last) { nodes { digest effects { events { nodes { contents { type { repr } json } } } } } } }`,
+      { fn: `${pkg}::arst::${fn}`, last: limit ?? 20 }
+    );
+
+    const found = [];
+    for (const node of data?.transactions?.nodes ?? []) {
+      for (const ev of node.effects?.events?.nodes ?? []) {
+        if (ev.contents?.type?.repr === eventType) {
+          found.push({ id: { txDigest: node.digest, eventSeq: '0' }, parsedJson: ev.contents.json });
+        }
+      }
+    }
+    return { data: found };
+  }
+
+  throw new Error(`Metodo RPC no migrado a GraphQL: ${method}`);
 }
 
 function fmt(n,d=0){return Number(n).toLocaleString('es-AR',{minimumFractionDigits:d,maximumFractionDigits:d})}
