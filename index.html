@@ -259,6 +259,25 @@ const BACKEND    = 'https://arst-backend-production.up.railway.app';
       tab_send: 'Enviar',
       tab_withdraw: 'Retirar',
       tab_history: 'Historial',
+      tab_staking: 'Staking',
+      staking_no_wallet_title: 'Conectá tu wallet',
+      staking_no_wallet_desc: 'Conectá tu wallet para depositar y ganar rendimiento en ARSt.',
+      staking_success_title: '¡Listo!',
+      staking_stake_btn: 'Depositar',
+      staking_signing: 'Esperando firma...',
+      staking_retry: 'Reintentar',
+      staking_pool_label: 'Tasa actual',
+      staking_apy: 'anual',
+      staking_total_staked: 'Total depositado en el pool',
+      staking_your_position: 'Tu depósito',
+      staking_est_reward: 'Reward estimado',
+      staking_claim_btn: 'Cobrar reward',
+      staking_unstake_btn: 'Retirar todo',
+      staking_pending_unstake: 'Retiro en proceso, se acredita en unos segundos...',
+      staking_pending_claim: 'Cobro de reward en proceso, se acredita en unos segundos...',
+      staking_cancel_btn: 'Cancelar solicitud',
+      staking_available_label: 'Disponible',
+      staking_amount_label: 'Monto a depositar (ARSt)',
 
       // Wallet modal
       modal_title: 'Conectar wallet',
@@ -421,6 +440,25 @@ const BACKEND    = 'https://arst-backend-production.up.railway.app';
       tab_send: 'Send',
       tab_withdraw: 'Withdraw',
       tab_history: 'History',
+      tab_staking: 'Staking',
+      staking_no_wallet_title: 'Connect your wallet',
+      staking_no_wallet_desc: 'Connect your wallet to deposit and earn yield on ARSt.',
+      staking_success_title: 'Done!',
+      staking_stake_btn: 'Deposit',
+      staking_signing: 'Waiting for signature...',
+      staking_retry: 'Retry',
+      staking_pool_label: 'Current rate',
+      staking_apy: 'APY',
+      staking_total_staked: 'Total staked in pool',
+      staking_your_position: 'Your stake',
+      staking_est_reward: 'Estimated reward',
+      staking_claim_btn: 'Claim reward',
+      staking_unstake_btn: 'Unstake all',
+      staking_pending_unstake: 'Unstake in progress, credited in a few seconds...',
+      staking_pending_claim: 'Reward claim in progress, credited in a few seconds...',
+      staking_cancel_btn: 'Cancel request',
+      staking_available_label: 'Available',
+      staking_amount_label: 'Amount to stake (ARSt)',
 
       // Wallet modal
       modal_title: 'Connect wallet',
@@ -606,6 +644,22 @@ async function rpc(method, params) {
       }
     }
     return { data: found };
+  }
+
+  if (method === 'suix_getOwnedObjects') {
+    const [address, opts] = params;
+    const structType = opts?.filter?.StructType;
+    if (!structType) return { data: [] };
+    const data = await graphqlQuery(
+      `query($addr: SuiAddress!, $type: String!) { address(address: $addr) { objects(filter: { type: $type }, first: 10) { nodes { address contents { json } } } } }`,
+      { addr: address, type: structType }
+    );
+    const nodes = data?.address?.objects?.nodes ?? [];
+    return {
+      data: nodes.map(n => ({
+        data: { objectId: n.address, content: { fields: n.contents?.json ?? {} } },
+      })),
+    };
   }
 
   throw new Error(`Metodo RPC no migrado a GraphQL: ${method}`);
@@ -1091,6 +1145,247 @@ function WithdrawTab({address,balance,wallet,oraclePrice,lang}) {
   );
 }
 
+// ── StakingTab ───────────────────────────────────────────────────────────────
+const STAKING_PACKAGE_ID = '0x414c031658b26de78bcfa3b39af4a977d9f6214fe7bd3d73ba7886a344e2a4ea';
+const STAKING_POOL_ID    = '0x6a27ab0c623a3e8fcd2d33915988f5d1dd1284c68133d239fa7bac4be9b88e11';
+const SUI_CLOCK_ID       = '0x6';
+
+function estimateReward(principal, rateBps, stakedAtMs) {
+  const elapsedMs = Date.now() - stakedAtMs;
+  if (elapsedMs <= 0) return 0;
+  const numerator = BigInt(principal) * BigInt(rateBps) * BigInt(elapsedMs);
+  const denominator = 10000n * 31536000000n;
+  return Number(numerator / denominator);
+}
+
+function StakingTab({ address, balance, wallet, lang }) {
+  const [poolInfo, setPoolInfo] = useState(null);
+  const [position, setPosition] = useState(null);
+  const [pendingRequest, setPendingRequest] = useState(null);
+  const [amount, setAmount] = useState('');
+  const [status, setStatus] = useState('idle');
+  const [txDigest, setTxDigest] = useState('');
+  const [errMsg, setErrMsg] = useState('');
+
+  const loadAll = async () => {
+    try {
+      const poolRes = await rpc('sui_getObject', [STAKING_POOL_ID, { showContent: true }]);
+      const pf = poolRes?.data?.content?.fields;
+      if (pf) setPoolInfo({
+        totalStaked: parseInt(pf.total_staked ?? '0'),
+        rateBps: parseInt(pf.annual_rate_bps ?? '0'),
+        paused: pf.paused ?? false,
+      });
+    } catch (e) { console.error(e); }
+
+    if (!address) return;
+
+    try {
+      const posRes = await rpc('suix_getOwnedObjects', [address, {
+        filter: { StructType: `${STAKING_PACKAGE_ID}::staking::StakePosition` },
+        options: { showContent: true },
+      }]);
+      const posObj = posRes?.data?.[0];
+      if (posObj) {
+        const f = posObj.data.content.fields;
+        setPosition({
+          objectId: posObj.data.objectId,
+          principal: parseInt(f.principal ?? '0'),
+          stakedAtMs: parseInt(f.staked_at_ms ?? '0'),
+          claimedRewards: parseInt(f.claimed_rewards ?? '0'),
+        });
+      } else {
+        setPosition(null);
+      }
+    } catch (e) { console.error(e); }
+
+    // Buscar solicitud pendiente (StakingRequest es un objeto compartido,
+    // hay que filtrar por el campo owner del contenido, no por owner de Sui).
+    try {
+      const r = await fetch(SUI_GRAPHQL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          query: `query($type: String!) { objects(filter: { type: $type }, first: 20) { nodes { address contents { json } } } }`,
+          variables: { type: `${STAKING_PACKAGE_ID}::staking::StakingRequest` },
+        }),
+      });
+      const body = await r.json();
+      const nodes = body?.data?.objects?.nodes ?? [];
+      const mine = nodes.find(n => n.contents?.json?.owner === address);
+      setPendingRequest(mine ? { objectId: mine.address, isFullUnstake: mine.contents.json.is_full_unstake } : null);
+    } catch (e) { console.error(e); }
+  };
+
+  useEffect(() => { loadAll(); const t = setInterval(loadAll, 15000); return () => clearInterval(t); }, [address]);
+
+  if (!address) return h('div', { className: 'panel' }, h('div', { className: 'wallet-prompt' },
+    h('div', { className: 'wallet-icon' }, '🌱'),
+    h('h3', null, tr(lang, 'staking_no_wallet_title')),
+    h('p', null, tr(lang, 'staking_no_wallet_desc'))
+  ));
+
+  const preview = parseFloat(amount) || 0;
+  const estReward = position ? estimateReward(position.principal, poolInfo?.rateBps ?? 0, position.stakedAtMs) : 0;
+
+  async function signAndExec(tx) {
+    const ref = wallet.ref; const type = wallet.type;
+    if (type === 'nightly' || type === 'standard') {
+      return await ref.signAndExecuteTransaction({ transaction: tx, chain: 'sui:testnet', options: { showEffects: true } });
+    }
+    throw new Error(tr(lang, 'send_err_no_wallet'));
+  }
+
+  const doStake = async () => {
+    if (!preview || preview <= 0) { alert(tr(lang, 'send_err_invalid_amount')); return; }
+    if (preview > balance) { alert(tr(lang, 'send_err_insufficient')); return; }
+    if (!wallet?.ref) { alert(tr(lang, 'send_err_no_wallet')); return; }
+
+    setStatus('signing'); setErrMsg('');
+    try {
+      const amountUnits = Math.round(preview * 100);
+      const coinsRes = await rpc('suix_getCoins', [address, ARST_TYPE, null, 10]);
+      const coins = coinsRes?.data || [];
+      if (!coins.length) throw new Error(tr(lang, 'send_err_no_coins'));
+      const sorted = coins.sort((a, b) => Number(BigInt(b.balance) - BigInt(a.balance)));
+      let coin = sorted.find(c => parseInt(c.balance) >= amountUnits);
+
+      const { Transaction } = await import('https://esm.sh/@mysten/sui@1.21.1/transactions');
+      const tx = new Transaction();
+      tx.setSender(address);
+      tx.setGasBudget(10_000_000);
+
+      let coinArg;
+      if (coin) {
+        if (parseInt(coin.balance) === amountUnits) {
+          coinArg = tx.object(coin.coinObjectId);
+        } else {
+          const [split] = tx.splitCoins(tx.object(coin.coinObjectId), [tx.pure.u64(amountUnits)]);
+          coinArg = split;
+        }
+      } else {
+        const base = sorted[0];
+        const others = sorted.slice(1).map(c => tx.object(c.coinObjectId));
+        if (others.length) tx.mergeCoins(tx.object(base.coinObjectId), others);
+        const [split] = tx.splitCoins(tx.object(base.coinObjectId), [tx.pure.u64(amountUnits)]);
+        coinArg = split;
+      }
+
+      tx.moveCall({
+        target: `${STAKING_PACKAGE_ID}::staking::stake`,
+        arguments: [tx.object(STAKING_POOL_ID), coinArg, tx.object(SUI_CLOCK_ID)],
+      });
+
+      const result = await signAndExec(tx);
+      setTxDigest(result?.digest || 'ok');
+      setStatus('done');
+      setAmount('');
+      loadAll();
+    } catch (e) {
+      setErrMsg(e.message || 'Error desconocido');
+      setStatus('error');
+    }
+  };
+
+  const doRequest = async (isFullUnstake) => {
+    if (!position || !wallet?.ref) return;
+    setStatus('signing'); setErrMsg('');
+    try {
+      const { Transaction } = await import('https://esm.sh/@mysten/sui@1.21.1/transactions');
+      const tx = new Transaction();
+      tx.setSender(address);
+      tx.setGasBudget(10_000_000);
+      tx.moveCall({
+        target: `${STAKING_PACKAGE_ID}::staking::create_staking_request`,
+        arguments: [
+          tx.object(STAKING_POOL_ID),
+          tx.object(position.objectId),
+          tx.pure.bool(isFullUnstake),
+          tx.object(SUI_CLOCK_ID),
+        ],
+      });
+      const result = await signAndExec(tx);
+      setTxDigest(result?.digest || 'ok');
+      setStatus('done');
+      loadAll();
+    } catch (e) {
+      setErrMsg(e.message || 'Error desconocido');
+      setStatus('error');
+    }
+  };
+
+  const doCancel = async () => {
+    if (!pendingRequest || !wallet?.ref) return;
+    setStatus('signing'); setErrMsg('');
+    try {
+      const { Transaction } = await import('https://esm.sh/@mysten/sui@1.21.1/transactions');
+      const tx = new Transaction();
+      tx.setSender(address);
+      tx.setGasBudget(10_000_000);
+      tx.moveCall({
+        target: `${STAKING_PACKAGE_ID}::staking::cancel_staking_request`,
+        arguments: [tx.object(pendingRequest.objectId)],
+      });
+      const result = await signAndExec(tx);
+      setTxDigest(result?.digest || 'ok');
+      setStatus('done');
+      loadAll();
+    } catch (e) {
+      setErrMsg(e.message || 'Error desconocido');
+      setStatus('error');
+    }
+  };
+
+  if (status === 'done') return h('div', { className: 'panel' }, h('div', { className: 'wallet-prompt' },
+    h('div', { className: 'wallet-icon' }, '✅'),
+    h('h3', null, tr(lang, 'staking_success_title')),
+    txDigest && txDigest !== 'ok' && h('a', { className: 'tx-link', href: `${EXPLORER}/txblock/${txDigest}`, target: '_blank', style: { display: 'block', marginTop: '12px' } }, tr(lang, 'withdraw_explorer')),
+    h('button', { className: 'btn btn-outline', style: { marginTop: '20px' }, onClick: () => setStatus('idle') }, tr(lang, 'withdraw_new'))
+  ));
+
+  const btnLabel = { idle: tr(lang, 'staking_stake_btn'), signing: tr(lang, 'staking_signing'), error: tr(lang, 'staking_retry') }[status] || tr(lang, 'staking_stake_btn');
+
+  return h('div', { className: 'panel' },
+    h('div', { className: 'gap3' },
+      poolInfo && h('div', { className: 'balance-display' },
+        h('div', null,
+          h('div', { className: 'bl' }, tr(lang, 'staking_pool_label')),
+          h('div', { className: 'bv' }, (poolInfo.rateBps / 100).toFixed(2) + '% ' + tr(lang, 'staking_apy')),
+          h('div', { className: 'balance-usd' }, tr(lang, 'staking_total_staked') + ': ' + fmt(poolInfo.totalStaked / 100, 2) + ' ARSt')
+        )
+      ),
+
+      // Posicion actual
+      position && h('div', { className: 'alert alert-warn' },
+        h('div', null, tr(lang, 'staking_your_position') + ': ' + fmt(position.principal / 100, 2) + ' ARSt'),
+        h('div', null, tr(lang, 'staking_est_reward') + ': ' + fmt(estReward / 100, 2) + ' ARSt'),
+        !pendingRequest && h('div', { style: { display: 'flex', gap: '8px', marginTop: '10px' } },
+          h('button', { className: 'btn btn-outline', style: { flex: 1 }, onClick: () => doRequest(false), disabled: status === 'signing' }, tr(lang, 'staking_claim_btn')),
+          h('button', { className: 'btn btn-primary', style: { flex: 1 }, onClick: () => doRequest(true), disabled: status === 'signing' }, tr(lang, 'staking_unstake_btn'))
+        ),
+        pendingRequest && h('div', { style: { marginTop: '10px' } },
+          h('div', null, '⏳ ' + tr(lang, pendingRequest.isFullUnstake ? 'staking_pending_unstake' : 'staking_pending_claim')),
+          h('button', { className: 'btn btn-outline', style: { marginTop: '8px' }, onClick: doCancel, disabled: status === 'signing' }, tr(lang, 'staking_cancel_btn'))
+        )
+      ),
+
+      // Formulario de deposito
+      !position && h('div', null,
+        h('div', { className: 'balance-display' },
+          h('div', null, h('div', { className: 'bl' }, tr(lang, 'staking_available_label')), h('div', { className: 'bv' }, fmt(balance, 2) + ' ARSt')),
+          h('button', { className: 'btn btn-outline', style: { fontSize: '11px', padding: '6px 14px' }, onClick: () => setAmount(String(balance)) }, tr(lang, 'withdraw_max'))
+        ),
+        h('div', { style: { marginTop: '12px' } },
+          h('div', { className: 'field-label' }, tr(lang, 'staking_amount_label')),
+          h('input', { className: 'field-input', type: 'number', placeholder: '100', min: 1, value: amount, onChange: e => setAmount(e.target.value) })
+        ),
+        errMsg && h('div', { className: 'alert alert-error' }, '❌ ' + errMsg),
+        h('button', { className: 'btn btn-primary', style: { width: '100%', padding: '14px', marginTop: '12px' }, onClick: doStake, disabled: status === 'signing' }, btnLabel)
+      )
+    )
+  );
+}
+
 // ── HistoryTab ────────────────────────────────────────────────────────────────
 function HistoryTab({address,oraclePrice,lang}) {
   const [events,setEvents]=useState([]);const [loading,setLoading]=useState(false);
@@ -1286,10 +1581,11 @@ function App() {
         )
       ),
       h('div', { className: 'tabs' },
-        ['deposit', 'send', 'withdraw', 'history'].map((tabId, i) => h('button', { key: tabId, className: 'tab' + (tab === tabId ? ' active' : ''), onClick: () => setTab(tabId) }, [tr(lang, 'tab_deposit'), tr(lang, 'tab_send'), tr(lang, 'tab_withdraw'), tr(lang, 'tab_history')][i]))
+        ['deposit', 'send', 'staking', 'withdraw', 'history'].map((tabId, i) => h('button', { key: tabId, className: 'tab' + (tab === tabId ? ' active' : ''), onClick: () => setTab(tabId) }, [tr(lang, 'tab_deposit'), tr(lang, 'tab_send'), tr(lang, 'tab_staking'), tr(lang, 'tab_withdraw'), tr(lang, 'tab_history')][i]))
       ),
       tab === 'deposit' && h(DepositTab, { address, lang }),
       tab === 'send' && h(SendTab, { address, balance, wallet, lang }),
+      tab === 'staking' && h(StakingTab, { address, balance, wallet, lang }),
       tab === 'withdraw' && h(WithdrawTab, { address, balance, wallet, oraclePrice: oracle.price, lang }),
       tab === 'history' && h(HistoryTab, { address, oraclePrice: oracle.price, lang })
     ),
