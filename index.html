@@ -311,6 +311,10 @@ const BACKEND    = 'https://arst-backend-production.up.railway.app';
       staking_cancel_btn: 'Cancelar solicitud',
       staking_available_label: 'Disponible',
       staking_amount_label: 'Monto a depositar (ARSt)',
+      staking_confirm_unstake: 'Vas a retirar {principal} ARSt de capital + {reward} ARSt de reward. ¿Confirmás?',
+      staking_confirm_claim: 'Vas a cobrar {reward} ARSt de reward, tu depósito sigue activo. ¿Confirmás?',
+      staking_confirm_cancel: 'Cancelar',
+      staking_confirm_ok: 'Confirmar',
 
       // Wallet modal
       modal_title: 'Conectar wallet',
@@ -501,6 +505,10 @@ const BACKEND    = 'https://arst-backend-production.up.railway.app';
       staking_cancel_btn: 'Cancel request',
       staking_available_label: 'Available',
       staking_amount_label: 'Amount to stake (ARSt)',
+      staking_confirm_unstake: 'You will withdraw {principal} ARSt principal + {reward} ARSt reward. Confirm?',
+      staking_confirm_claim: 'You will claim {reward} ARSt reward, your deposit stays active. Confirm?',
+      staking_confirm_cancel: 'Cancel',
+      staking_confirm_ok: 'Confirm',
 
       // Wallet modal
       modal_title: 'Connect wallet',
@@ -1267,6 +1275,7 @@ function StakingTab({ address, balance, wallet, lang }) {
   const [status, setStatus] = useState('idle');
   const [txDigest, setTxDigest] = useState('');
   const [errMsg, setErrMsg] = useState('');
+  const [confirmAction, setConfirmAction] = useState(null); // null | 'claim' | 'unstake'
 
   const loadAll = async () => {
     try {
@@ -1413,10 +1422,12 @@ function StakingTab({ address, balance, wallet, lang }) {
       const result = await signAndExec(tx);
       setTxDigest(result?.digest || 'ok');
       setStatus('done');
+      setConfirmAction(null);
       loadAll();
     } catch (e) {
       setErrMsg(e.message || 'Error desconocido');
       setStatus('error');
+      setConfirmAction(null);
     }
   };
 
@@ -1465,9 +1476,23 @@ function StakingTab({ address, balance, wallet, lang }) {
       position && h('div', { className: 'alert alert-warn' },
         h('div', null, tr(lang, 'staking_your_position') + ': ' + fmt(position.principal / 100, 2) + ' ARSt'),
         h('div', null, tr(lang, 'staking_est_reward') + ': ' + fmt(estReward / 100, 2) + ' ARSt'),
-        !pendingRequest && h('div', { style: { display: 'flex', gap: '8px', marginTop: '10px' } },
-          h('button', { className: 'btn btn-outline', style: { flex: 1 }, onClick: () => doRequest(false), disabled: status === 'signing' }, tr(lang, 'staking_claim_btn')),
-          h('button', { className: 'btn btn-primary', style: { flex: 1 }, onClick: () => doRequest(true), disabled: status === 'signing' }, tr(lang, 'staking_unstake_btn'))
+
+        // Panel de confirmacion con el monto, antes de firmar
+        confirmAction && h('div', { style: { marginTop: '12px', padding: '12px', background: 'var(--surface2)', borderRadius: '8px', border: '1px solid var(--border)' } },
+          h('div', { style: { fontSize: '13px', marginBottom: '8px' } },
+            confirmAction === 'unstake'
+              ? tr(lang, 'staking_confirm_unstake', { principal: fmt(position.principal / 100, 2), reward: fmt(estReward / 100, 2) })
+              : tr(lang, 'staking_confirm_claim', { reward: fmt(estReward / 100, 2) })
+          ),
+          h('div', { style: { display: 'flex', gap: '8px' } },
+            h('button', { className: 'btn btn-outline', style: { flex: 1 }, onClick: () => setConfirmAction(null), disabled: status === 'signing' }, tr(lang, 'staking_confirm_cancel')),
+            h('button', { className: 'btn btn-primary', style: { flex: 1 }, onClick: () => doRequest(confirmAction === 'unstake'), disabled: status === 'signing' }, tr(lang, 'staking_confirm_ok'))
+          )
+        ),
+
+        !pendingRequest && !confirmAction && h('div', { style: { display: 'flex', gap: '8px', marginTop: '10px' } },
+          h('button', { className: 'btn btn-outline', style: { flex: 1 }, onClick: () => setConfirmAction('claim'), disabled: status === 'signing' }, tr(lang, 'staking_claim_btn')),
+          h('button', { className: 'btn btn-primary', style: { flex: 1 }, onClick: () => setConfirmAction('unstake'), disabled: status === 'signing' }, tr(lang, 'staking_unstake_btn'))
         ),
         pendingRequest && h('div', { style: { marginTop: '10px' } },
           h('div', null, '⏳ ' + tr(lang, pendingRequest.isFullUnstake ? 'staking_pending_unstake' : 'staking_pending_claim')),
