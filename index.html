@@ -171,6 +171,26 @@ footer{border-top:1px solid var(--border);padding:28px 32px;display:flex;justify
 /* ── Responsive ── */
 @media(max-width:900px){.metrics{grid-template-columns:1fr 1fr}.about-grid{grid-template-columns:1fr}.user-balance-grid{grid-template-columns:1fr 1fr}.deposit-steps{grid-template-columns:1fr}}
 @media(max-width:600px){.metrics{grid-template-columns:1fr}.user-balance-grid{grid-template-columns:1fr}nav{padding:0 16px}.hero,.about,.section{padding-left:16px;padding-right:16px}.hero-title{font-size:28px;letter-spacing:-1px}.nav-links{display:none}footer{flex-direction:column;gap:14px;text-align:center}}
+.asset-row-list{border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--surface)}
+.asset-row{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;cursor:pointer;transition:background .15s;border-bottom:1px solid var(--border)}
+.asset-row:last-child{border-bottom:none}
+.asset-row:hover{background:var(--surface2)}
+.asset-row.expanded{background:var(--surface2)}
+.asset-row-left{display:flex;align-items:center;gap:12px;min-width:0}
+.asset-icon{width:36px;height:36px;border-radius:50%;background:var(--blue-dim);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:var(--blue);flex-shrink:0}
+.asset-name{font-weight:600;font-size:14px}
+.asset-sub{font-size:11px;color:var(--muted2);font-family:'IBM Plex Mono',monospace}
+.asset-row-right{display:flex;align-items:center}
+.asset-stats{display:flex;gap:28px;align-items:center}
+.asset-stat{text-align:right}
+.asset-stat-label{font-size:9.5px;color:var(--muted2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
+.asset-stat-value{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600}
+.asset-chevron{transition:transform .2s;color:var(--muted2);margin-left:18px;font-size:12px}
+.asset-chevron.open{transform:rotate(180deg)}
+.asset-panel{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.asset-panel.open{max-height:900px}
+.asset-panel-inner{padding:22px;border-top:1px solid var(--border)}
+@media(max-width:640px){.asset-stats{gap:12px}.asset-stat-label{display:none}.asset-row{padding:14px}}
 </style>
 </head>
 <body>
@@ -201,6 +221,9 @@ const BACKEND    = 'https://arst-backend-production.up.railway.app';
       bank_section_title: 'Banco',
       bank_coming_title: 'Próximamente',
       bank_coming_desc: 'Depósitos en USDC y otras monedas. Estamos trabajando en esta sección.',
+      staking_section_sub: 'Depositá tus ARSt y ganá rendimiento',
+      bank_coming_sub: 'Todavía no disponible',
+      bank_status_label: 'Estado',
       nav_connect: 'Conectar wallet',
       nav_disconnect: 'Desconectar wallet',
       nav_network: 'testnet',
@@ -388,6 +411,9 @@ const BACKEND    = 'https://arst-backend-production.up.railway.app';
       bank_section_title: 'Bank',
       bank_coming_title: 'Coming soon',
       bank_coming_desc: 'USDC and other currency deposits. This section is under construction.',
+      staking_section_sub: 'Deposit your ARSt and earn yield',
+      bank_coming_sub: 'Not available yet',
+      bank_status_label: 'Status',
       nav_connect: 'Connect wallet',
       nav_disconnect: 'Disconnect wallet',
       nav_network: 'testnet',
@@ -1157,6 +1183,57 @@ function WithdrawTab({address,balance,wallet,oraclePrice,lang}) {
   );
 }
 
+// ── ExpandableRow (fila desplegable estilo mercado DeFi) ────────────────────
+function ExpandableRow({ icon, name, sub, stats, children, defaultOpen }) {
+  const [open, setOpen] = useState(!!defaultOpen);
+  return h('div', { className: 'asset-row-list' },
+    h('div', { className: 'asset-row' + (open ? ' expanded' : ''), onClick: () => setOpen(o => !o) },
+      h('div', { className: 'asset-row-left' },
+        h('div', { className: 'asset-icon' }, icon),
+        h('div', null,
+          h('div', { className: 'asset-name' }, name),
+          sub && h('div', { className: 'asset-sub' }, sub)
+        )
+      ),
+      h('div', { className: 'asset-row-right' },
+        h('div', { className: 'asset-stats' },
+          (stats || []).map((s, i) => h('div', { key: i, className: 'asset-stat' },
+            h('div', { className: 'asset-stat-label' }, s.label),
+            h('div', { className: 'asset-stat-value', style: s.color ? { color: s.color } : {} }, s.value)
+          ))
+        ),
+        h('span', { className: 'asset-chevron' + (open ? ' open' : '') }, '▾')
+      )
+    ),
+    h('div', { className: 'asset-panel' + (open ? ' open' : '') },
+      h('div', { className: 'asset-panel-inner' }, children)
+    )
+  );
+}
+
+// ── StakingSection (fila ARSt con stats del pool, se despliega a StakingTab) ─
+function StakingSection({ address, balance, wallet, lang }) {
+  const [poolInfo, setPoolInfo] = useState(null);
+
+  useEffect(() => {
+    const load = () => rpc('sui_getObject', [STAKING_POOL_ID, { showContent: true }])
+      .then(r => {
+        const f = r?.data?.content?.fields;
+        if (f) setPoolInfo({ totalStaked: parseInt(f.total_staked ?? '0'), rateBps: parseInt(f.annual_rate_bps ?? '0') });
+      }).catch(console.error);
+    load(); const t = setInterval(load, 20000); return () => clearInterval(t);
+  }, []);
+
+  const stats = [
+    { label: tr(lang, 'staking_apy'), value: poolInfo ? (poolInfo.rateBps / 100).toFixed(2) + '%' : '—', color: 'var(--green)' },
+    { label: tr(lang, 'staking_total_staked'), value: poolInfo ? fmt(poolInfo.totalStaked / 100) + ' ARSt' : '—' },
+  ];
+
+  return h(ExpandableRow, { icon: '₳', name: 'ARSt Staking', sub: tr(lang, 'staking_section_sub'), stats },
+    h(StakingTab, { address, balance, wallet, lang })
+  );
+}
+
 // ── StakingTab ───────────────────────────────────────────────────────────────
 const STAKING_PACKAGE_ID = '0x414c031658b26de78bcfa3b39af4a977d9f6214fe7bd3d73ba7886a344e2a4ea';
 const STAKING_POOL_ID    = '0x6a27ab0c623a3e8fcd2d33915988f5d1dd1284c68133d239fa7bac4be9b88e11';
@@ -1610,16 +1687,20 @@ function App() {
 
     h('div', { id: 'staking-section', className: 'section' },
       h('div', { className: 'section-title' }, tr(lang, 'staking_section_title')),
-      h(StakingTab, { address, balance, wallet, lang })
+      h(StakingSection, { address, balance, wallet, lang })
     ),
 
     h('div', { id: 'banco-section', className: 'section' },
       h('div', { className: 'section-title' }, tr(lang, 'bank_section_title')),
-      h('div', { className: 'panel' }, h('div', { className: 'wallet-prompt' },
-        h('div', { className: 'wallet-icon' }, '🏦'),
-        h('h3', null, tr(lang, 'bank_coming_title')),
-        h('p', null, tr(lang, 'bank_coming_desc'))
-      ))
+      h(ExpandableRow, {
+        icon: '$', name: 'USDC', sub: tr(lang, 'bank_coming_sub'),
+        stats: [{ label: tr(lang, 'bank_status_label'), value: tr(lang, 'bank_coming_title'), color: 'var(--gold)' }]
+      }, h('p', { style: { color: 'var(--muted2)', fontSize: '13px' } }, tr(lang, 'bank_coming_desc'))),
+      h('div', { style: { height: '10px' } }),
+      h(ExpandableRow, {
+        icon: '₮', name: 'USDT', sub: tr(lang, 'bank_coming_sub'),
+        stats: [{ label: tr(lang, 'bank_status_label'), value: tr(lang, 'bank_coming_title'), color: 'var(--gold)' }]
+      }, h('p', { style: { color: 'var(--muted2)', fontSize: '13px' } }, tr(lang, 'bank_coming_desc')))
     ),
 
     h('footer', null,
