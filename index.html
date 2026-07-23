@@ -764,7 +764,7 @@ function shortAddr(a){return a.slice(0,6)+'...'+a.slice(-4)}
     return _registeredWallets;
   }
 
-  async function connectWallet(wallet, onSuccess, setErr) {
+  async function connectWallet(wallet, onSuccess, setErr, silent = false) {
     try {
       const { ref, type, name } = wallet;
 
@@ -787,7 +787,7 @@ function shortAddr(a){return a.slice(0,6)+'...'+a.slice(-4)}
         const connectFeat = ref.features?.['standard:connect'] || ref['#e']?.['standard:connect'];
         if (connectFeat) {
           const r = await connectFeat.connect?.({
-            silent: false,
+            silent,
             permissions: ['viewAccount', 'suggestTransactions']
           });
           // Slush guarda address como getter en el prototype
@@ -802,7 +802,7 @@ function shortAddr(a){return a.slice(0,6)+'...'+a.slice(-4)}
         }
         if (ref.connect) {
           const r = await ref.connect({
-            silent: false,
+            silent,
             permissions: ['viewAccount', 'suggestTransactions']
           });
           const acc = r?.accounts?.[0] || ref.accounts?.[0];
@@ -1588,8 +1588,43 @@ function App() {
     load();const t=setInterval(load,15000);return()=>clearInterval(t);
   },[address]);
 
-  const connect=(w)=>{setWallet(w);setShowModal(false);};
-  const disconnect=()=>{setWallet(null);setBalance(0);};
+  const connect=(w)=>{
+    setWallet(w);
+    setShowModal(false);
+    try {
+      localStorage.setItem('arst_wallet', JSON.stringify({
+        name: w.name, type: w.type,
+        address: w.type === 'manual' ? w.address : undefined,
+      }));
+    } catch (e) {}
+  };
+  const disconnect=()=>{
+    setWallet(null);
+    setBalance(0);
+    try { localStorage.removeItem('arst_wallet'); } catch (e) {}
+  };
+
+  // Reconexion automatica al cargar la pagina
+  useEffect(() => {
+    let cancelled = false;
+    const saved = (() => { try { return JSON.parse(localStorage.getItem('arst_wallet')); } catch (e) { return null; } })();
+    if (!saved) return;
+
+    if (saved.type === 'manual') {
+      setWallet({ address: saved.address, ref: null, type: 'manual' });
+      return;
+    }
+
+    const tryReconnect = () => {
+      if (cancelled) return;
+      const found = getWallets().find(w => w.name === saved.name);
+      if (found) {
+        connectWallet(found, (w) => { if (!cancelled) setWallet(w); }, () => {}, true).catch(() => {});
+      }
+    };
+    const t = setTimeout(tryReconnect, 1200);
+    return () => { cancelled = true; clearTimeout(t); };
+  }, []);
 
   const tsAgo=oracle.ts>0?Math.floor((Date.now()-oracle.ts)/60000):null;
   const tsLabel = tsAgo === null ? '—' :
