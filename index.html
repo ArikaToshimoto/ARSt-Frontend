@@ -50,7 +50,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(8,13,26,.92);backdrop-filt
 .ticker-change.up{background:var(--green-dim);color:var(--green)}.ticker-change.dn{background:var(--red-dim);color:var(--red)}
 
 /* ── Metrics ── */
-.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:56px}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:56px;scroll-margin-top:80px}
 .metric{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px 24px;position:relative;overflow:hidden}
 .metric::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
 .metric.m-blue::before{background:var(--blue)}.metric.m-gold::before{background:var(--gold)}.metric.m-green::before{background:var(--green)}.metric.m-muted::before{background:var(--muted)}.metric.m-red::before{background:var(--red)}
@@ -82,7 +82,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(8,13,26,.92);backdrop-filt
 .badge-security{padding:5px 12px;border-radius:6px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.5px;background:var(--green-dim);border:1px solid rgba(16,185,129,.2);color:var(--green)}
 
 /* ── Section ── */
-.section{max-width:1100px;margin:0 auto;padding:0 32px 72px}
+.section{max-width:1100px;margin:0 auto;padding:0 32px 72px;scroll-margin-top:80px}
 .section-title{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:24px;display:flex;align-items:center;gap:12px}
 .section-title::after{content:'';flex:1;height:1px;background:var(--border)}
 
@@ -889,10 +889,10 @@ function WalletModal({onConnect,onClose, lang}) {
           h('h3', null, h('div', { className: 'icon', style: { background: 'var(--blue-dim)' } }, '🔒'), tr(lang, 'about_4_title')),
           h('p', null, tr(lang, 'about_4_p1')),
           h('div', { className: 'security-badges' },
-            lang === 'es'
+            (lang === 'es'
               ? ['Multifirma 2 de 3', 'Timelock 48hs', 'Reserva on-chain', 'Código abierto', 'Sin admin unilateral', 'Pausa de emergencia']
               : ['2-of-3 Multisig', '48h Timelock', 'On-chain reserve', 'Open source', 'No unilateral admin', 'Emergency pause']
-                .map((b, i) => h('span', { key: i, className: 'badge-security' }, b))
+            ).map((b, i) => h('span', { key: i, className: 'badge-security' }, b))
           )
         )
       )
@@ -1685,7 +1685,7 @@ function App() {
       }, h('p', { style: { color: 'var(--muted2)', fontSize: '13px' } }, tr(lang, 'bank_coming_desc')))
     ),
 
-    h('div', { id: 'about-section' }, h(AboutSection, { lang })),
+    h('div', { id: 'about-section', style: { scrollMarginTop: '80px' } }, h(AboutSection, { lang })),
 
     h('div', { id: 'account-section', className: 'section' },
       h('div', { className: 'section-title' }, tr(lang, 'account_title')),
