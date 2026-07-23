@@ -195,6 +195,12 @@ const BACKEND    = 'https://arst-backend-production.up.railway.app';
       nav_what: '¿Qué es ARSt?',
       nav_transparency: 'Transparencia',
       nav_account: 'Mi cuenta',
+      nav_staking: 'Staking',
+      nav_bank: 'Banco',
+      staking_section_title: 'Staking',
+      bank_section_title: 'Banco',
+      bank_coming_title: 'Próximamente',
+      bank_coming_desc: 'Depósitos en USDC y otras monedas. Estamos trabajando en esta sección.',
       nav_connect: 'Conectar wallet',
       nav_disconnect: 'Desconectar wallet',
       nav_network: 'testnet',
@@ -376,6 +382,12 @@ const BACKEND    = 'https://arst-backend-production.up.railway.app';
       nav_what: 'What is ARSt?',
       nav_transparency: 'Transparency',
       nav_account: 'My account',
+      nav_staking: 'Staking',
+      nav_bank: 'Bank',
+      staking_section_title: 'Staking',
+      bank_section_title: 'Bank',
+      bank_coming_title: 'Coming soon',
+      bank_coming_desc: 'USDC and other currency deposits. This section is under construction.',
       nav_connect: 'Connect wallet',
       nav_disconnect: 'Disconnect wallet',
       nav_network: 'testnet',
@@ -1505,7 +1517,9 @@ function App() {
         h('div', { className: 'nav-links' },
           h('a', { href: '#about', onClick: e => { e.preventDefault(); document.getElementById('about-section')?.scrollIntoView({ behavior: 'smooth' }) } }, tr(lang, 'nav_what')),
           h('a', { href: '#metrics', onClick: e => { e.preventDefault(); document.getElementById('metrics-section')?.scrollIntoView({ behavior: 'smooth' }) } }, tr(lang, 'nav_transparency')),
-          h('a', { href: '#account', onClick: e => { e.preventDefault(); document.getElementById('account-section')?.scrollIntoView({ behavior: 'smooth' }) } }, tr(lang, 'nav_account'))
+          h('a', { href: '#account', onClick: e => { e.preventDefault(); document.getElementById('account-section')?.scrollIntoView({ behavior: 'smooth' }) } }, tr(lang, 'nav_account')),
+          h('a', { href: '#staking', onClick: e => { e.preventDefault(); document.getElementById('staking-section')?.scrollIntoView({ behavior: 'smooth' }) } }, tr(lang, 'nav_staking')),
+          h('a', { href: '#banco', onClick: e => { e.preventDefault(); document.getElementById('banco-section')?.scrollIntoView({ behavior: 'smooth' }) } }, tr(lang, 'nav_bank'))
         ),
         h('div', { className: 'nav-right' },
           h('button', { className: 'btn btn-outline', style: { padding: '6px 12px', fontSize: '11px' }, onClick: () => setLang(l => l === 'es' ? 'en' : 'es') }, lang === 'es' ? 'EN' : 'ES'),
@@ -1586,13 +1600,26 @@ function App() {
         )
       ),
       h('div', { className: 'tabs' },
-        ['deposit', 'send', 'staking', 'withdraw', 'history'].map((tabId, i) => h('button', { key: tabId, className: 'tab' + (tab === tabId ? ' active' : ''), onClick: () => setTab(tabId) }, [tr(lang, 'tab_deposit'), tr(lang, 'tab_send'), tr(lang, 'tab_staking'), tr(lang, 'tab_withdraw'), tr(lang, 'tab_history')][i]))
+        ['deposit', 'send', 'withdraw', 'history'].map((tabId, i) => h('button', { key: tabId, className: 'tab' + (tab === tabId ? ' active' : ''), onClick: () => setTab(tabId) }, [tr(lang, 'tab_deposit'), tr(lang, 'tab_send'), tr(lang, 'tab_withdraw'), tr(lang, 'tab_history')][i]))
       ),
       tab === 'deposit' && h(DepositTab, { address, lang }),
       tab === 'send' && h(SendTab, { address, balance, wallet, lang }),
-      tab === 'staking' && h(StakingTab, { address, balance, wallet, lang }),
       tab === 'withdraw' && h(WithdrawTab, { address, balance, wallet, oraclePrice: oracle.price, lang }),
       tab === 'history' && h(HistoryTab, { address, oraclePrice: oracle.price, lang })
+    ),
+
+    h('div', { id: 'staking-section', className: 'section' },
+      h('div', { className: 'section-title' }, tr(lang, 'staking_section_title')),
+      h(StakingTab, { address, balance, wallet, lang })
+    ),
+
+    h('div', { id: 'banco-section', className: 'section' },
+      h('div', { className: 'section-title' }, tr(lang, 'bank_section_title')),
+      h('div', { className: 'panel' }, h('div', { className: 'wallet-prompt' },
+        h('div', { className: 'wallet-icon' }, '🏦'),
+        h('h3', null, tr(lang, 'bank_coming_title')),
+        h('p', null, tr(lang, 'bank_coming_desc'))
+      ))
     ),
 
     h('footer', null,
